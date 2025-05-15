@@ -12,7 +12,6 @@
     </header>
     <!-- End of Header -->
   <section class="product-gallery">
-
   <!-- Rreshti 1: 2 produkte të mëdha -->
   <div class="product-row row-large">
     {% for product in products1|slice:":2" %}
@@ -77,27 +76,38 @@
   </div>
   <!-- Rreshti 2: 4 produkte më të vogla me overlay -->
   <div class="product-row row-small">
-    {% for product in products2|slice:"2:" %}
-      <div class="product-item small">
-        <a href="#">
-          <div class="image-wrapper">
-            <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+  {% for product in products2|slice:"2:" %}
+    <div class="product-item small">
+      <div class="image-wrapper">
+        <div class="product-slider">
+  <!-- Main Image first -->
+  {% if product.main_image %}
+    <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="slide-image active">
+  {% endif %}
+  <!-- Other gallery images -->
+  {% for image in product.images.all %}
+    <img src="{{ image.image.url }}" alt="{{ product.name }}" class="slide-image">
+  {% endfor %}
 
-            <div class="color-box">
-              {% for color in product.colors.all %}
-                <span class="color-square" style="background: {{ color.hex_code }}"></span>
-              {% endfor %}
-            </div>
+  <!-- Slider Controls -->
+  <button class="prev-btn"></button>
+  <button class="next-btn"></button>
+</div>
+        <div class="color-box">
+{% for color_link in product.e_product_color_set.all %}
+  <span class="color-square" style="background: {{ color_link.color.code }}"></span>
+{% endfor %}
+        </div>
 
-            <div class="product-overlay">
-              <p class="product-name">{{ product.name }}</p>
-              <span class="product-price">€{{ product.price }}</span>
-            </div>
-          </div>
-        </a>
+        <div class="product-overlay">
+          <p class="product-name text-small">{{ product.name }}</p>
+          <span class="product-price text-small">€{{ product.price }}</span>
+        </div>
+
       </div>
-    {% endfor %}
-  </div>
+    </div>
+  {% endfor %}
+</div>
 </section>
 
        <!-- Footer -->
