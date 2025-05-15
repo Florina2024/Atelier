@@ -1,0 +1,21 @@
+{% load static %}
+<div class="main-navbar">
+  <div class="navbar-left">
+    <a href="/" class="logo">JACQUEMUS</a>
+     <ul>
+      <li><a href="#" class="text-sm">"Tropique" - The Resort Collection</a></li>
+      <li><a href="#" class="text-sm">Bags</a></li>
+      <li><a href="#" class="text-sm">Women</a></li>
+      <li><a href="#" class="text-sm">Men</a></li>
+      <li><a href="#" class="text-sm">Explore</a></li>
+    </ul>
+  </div>
+  <div class="navbar-right">
+  <a href="#"><img src="{% static 'images/search.png' %}" alt="Search Icon" class="icon-img"></a>
+
+<!--    <a href="#"><i class="icon-user"></i></a>-->
+<!--    <a href="#"><i class="icon-heart"></i></a>-->
+<!--    <a href="#" class="text-sm">Shopping cart</a>-->
+    <a href="#" class="text-sm"><span>Shopping cart <i class="bi bi-handbag"></i> <span id="cart-total">{{ cartItems }}</span></span><span class="underline"></span></a>
+  </div>
+</div>

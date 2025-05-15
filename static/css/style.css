@@ -1,0 +1,281 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+@font-face {
+    font-family: "GiordanoGoldSerif";
+    src: url("../font/GiordanoGoldSerif.ttf") format('truetype'),
+         url("../font/GiordanoGoldSerif.woff2") format('woff2'),  /* Add WOFF2 for better performance */
+         url("../font/GiordanoGoldSerif.woff") format('woff');    /* Add WOFF for better compatibility */
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+  font-family: "FuturaPTLight";
+  src: url("../font/FuturaPTLight.woff2") format('woff2'),
+       url("../font/FuturaPTLight.woff") format('woff'),
+       url("../font/FuturaPTLight.otf") format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Root */
+:root{
+    --white: #fff;
+    --dark: #2e2e2e;
+    --lightdark: #1e1e1e;
+    --gray: #333;
+    --light-gray: #FAFAFA;
+    --title: "GiordanoGoldSerif", serif;
+    --text: "FuturaPTLight", sans-serif;
+}
+.container-one, .container.container-one{
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0;
+}
+.section{
+    padding: 150px 5vw 0 5vw;
+    position: relative;
+}
+.hidden {
+    display: none!important;
+}
+a{
+    text-decoration: none!important;
+}
+.display-flex.sb{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.text-sm{
+    font-family: var(--text);
+    color: var(--dark);
+    font-size: 14px;
+    font-weight: 200;
+    line-height:16px;
+}
+.text-small{
+    font-family: var(--text);
+    color: var(--lightdark);
+    font-size: 14px;
+    font-weight: 400;
+    line-height:20px;
+}
+.text-xs{
+    font-family: var(--text);
+    color: var(--lightdark);
+    font-size: 10px;
+    font-weight: 400;
+    line-height:20px;
+}
+.text-medium{
+    font-family: var(--text);
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 20px;
+}
+/*Navbar*/
+.main-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  font-family: var(--text);
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+}
+.navbar-left,
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+.navbar-left .logo {
+  font-family: var(--title);
+  font-size: 24px;
+  text-decoration: none;
+  color: black;
+  margin-right: 40px;
+}
+.navbar-left ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  padding: 0;
+  margin: 0;
+}
+.navbar-left ul li a {
+  text-decoration: none;
+  position: relative;
+}
+.navbar-left ul li a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0;
+  height: 1px;
+  background-color:  var(--dark);
+  transition: width 0.4s ease;
+}
+.navbar-left ul li a:hover::after {
+  width: 100%;
+}
+.navbar-right a {
+  margin-left: 25px;
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.navbar-right a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0;
+  height: 1px;
+  background-color:  var(--dark);
+  transition: width 0.4s ease;
+ }
+.navbar-right a:hover::after {
+  width: 100%;
+}
+.navbar-right i {
+  font-size: 16px;
+  margin-right: 5px;
+}
+.icon-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+/*Home page*/
+.row-large {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  margin-bottom: 5px;
+}
+.row-small {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 kolona me gjerësi të barabartë */
+  gap: 3px;
+}
+.row-small .product-item.small {
+  flex: 1 1 23%; /* katër në rresht */
+  position: relative;
+}
+.image-wrapper {
+  position: relative;
+  overflow: hidden;
+  width:100%;
+  height:800px;
+}
+.small .image-wrapper {
+  position: relative;
+  overflow: hidden;
+  width:100%;
+  height:500px;
+}
+.image-wrapper img {
+  width: 100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.image-wrapper:hover img {
+  transform: scale(1.05);
+}
+/* Collection label */
+.collection-label {
+  position: absolute;
+  bottom: 35px;
+  left: 25px;
+  padding: 4px 8px;
+}
+.product-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.slide-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 1; /* z-index i ulët */
+}
+.slide-image.active {
+  opacity: 1;
+  z-index: 1;
+}
+/* Ngjyrat sipër djathtas */
+.color-box {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 5; /* shto z-index më të lartë */
+}
+/* Overlay poshtë për emër dhe çmim */
+.product-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+  z-index: 5; /* shto z-index më të lartë */
+}
+.prev-btn, .next-btn {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+/* Kur bëhet hover mbi image-wrapper, shfaq edhe shigjetat */
+.image-wrapper:hover .prev-btn,
+.image-wrapper:hover .next-btn,
+.image-wrapper:hover .color-box,
+.image-wrapper:hover .product-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+.prev-btn::before,
+.next-btn::before {
+  font-family: sans-serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: white;
+}
+.prev-btn::before {
+  content: "‹"; /* shigjeta majtas */
+}
+.next-btn::before {
+  content: "›"; /* shigjeta djathtas */
+}
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+

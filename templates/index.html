@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'head.html' %}
+    <title>Atelier</title>
+</head>
+<body>
+       <!-- Header -->
+    <header class="index-header">
+        {% include 'navbar.html' %}
+    </header>
+    <!-- End of Header -->
+  <section class="product-gallery">
+
+  <!-- Rreshti 1: 2 produkte të mëdha -->
+  <div class="product-row row-large">
+    {% for product in products1|slice:":2" %}
+      <div class="product-item large">
+        <a href="#">
+          <div class="image-wrapper">
+            <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+            <div class="collection-label text-medium">{{ product.collection.collection }}</div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Rreshti 2: 4 produkte më të vogla me overlay -->
+   <div class="product-row row-small">
+  {% for product in products1|slice:"2:" %}
+    <div class="product-item small">
+      <div class="image-wrapper">
+        <div class="product-slider">
+  <!-- Main Image first -->
+  {% if product.main_image %}
+    <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="slide-image active">
+  {% endif %}
+  <!-- Other gallery images -->
+  {% for image in product.images.all %}
+    <img src="{{ image.image.url }}" alt="{{ product.name }}" class="slide-image">
+  {% endfor %}
+
+  <!-- Slider Controls -->
+  <button class="prev-btn"></button>
+  <button class="next-btn"></button>
+</div>
+        <div class="color-box">
+{% for color_link in product.e_product_color_set.all %}
+  <span class="color-square" style="background: {{ color_link.color.code }}"></span>
+{% endfor %}
+        </div>
+
+        <div class="product-overlay">
+          <p class="product-name text-small">{{ product.name }}</p>
+          <span class="product-price text-small">€{{ product.price }}</span>
+        </div>
+
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+    <!-- Rreshti 1: 2 produkte të mëdha -->
+  <div class="product-row row-large">
+    {% for product in products2|slice:":2" %}
+      <div class="product-item large">
+        <a href="#">
+          <div class="image-wrapper">
+            <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+            <div class="collection-label text-medium">{{ product.collection.collection }}</div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+  <!-- Rreshti 2: 4 produkte më të vogla me overlay -->
+  <div class="product-row row-small">
+    {% for product in products2|slice:"2:" %}
+      <div class="product-item small">
+        <a href="#">
+          <div class="image-wrapper">
+            <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+
+            <div class="color-box">
+              {% for color in product.colors.all %}
+                <span class="color-square" style="background: {{ color.hex_code }}"></span>
+              {% endfor %}
+            </div>
+
+            <div class="product-overlay">
+              <p class="product-name">{{ product.name }}</p>
+              <span class="product-price">€{{ product.price }}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+       <!-- Footer -->
+       {% include 'footer.html' %}
+        <!-- End of Footer -->
+    <!-- Scripts -->
+    {% include 'scripts.html' %}
+    <!-- End of Scripts -->
+<script>
+  document.querySelectorAll('.product-slider').forEach(slider => {
+    const slides = slider.querySelectorAll('.slide-image');
+    const prevBtn = slider.querySelector('.prev-btn');
+    const nextBtn = slider.querySelector('.next-btn');
+    let current = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+    }
+
+    prevBtn.addEventListener('click', () => {
+      current = (current - 1 + slides.length) % slides.length;
+      showSlide(current);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+    });
+  });
+</script>
+
+</body>
+</html>
