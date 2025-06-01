@@ -15,6 +15,7 @@ urlpatterns = [
     path('collection_page/<slug:collection_slug>/', P_views.collection_page, name='collection_page'),
     path('product/<int:product_id>/', P_views.product, name='product'),
     path('addToCart/', P_views.addToCart, name='addToCart'),
+    path('cart_modal/', P_views.cart_modal, name='cart_modal'),
     path('gifts-under-100/', P_views.gifts_under_100, name='gifts_under_100'),
     path('gifts-100-150/', P_views.gifts_100_150, name='gifts_100_150'),
     path('gifts-over-150/', P_views.gifts_over_150, name='gifts_over_150'),

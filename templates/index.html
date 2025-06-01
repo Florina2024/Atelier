@@ -30,6 +30,7 @@
    <div class="product-row row-small">
   {% for product in products1|slice:"2:" %}
     <div class="product-item small">
+     <a href="{% url 'product' product.id %}">
       <div class="image-wrapper">
         <div class="product-slider">
   <!-- Main Image first -->
@@ -53,10 +54,11 @@
 
         <div class="product-overlay">
           <p class="product-name text-small">{{ product.name }}</p>
-          <span class="product-price text-small">€{{ product.price }}</span>
+          <span class="product-price text-small">{{ product.price|floatformat:0 }} EUR</span>
         </div>
 
       </div>
+     </a>
     </div>
   {% endfor %}
 </div>
@@ -78,6 +80,7 @@
   <div class="product-row row-small">
   {% for product in products2|slice:"2:" %}
     <div class="product-item small">
+    <a href="{% url 'product' product.id %}">
       <div class="image-wrapper">
         <div class="product-slider">
   <!-- Main Image first -->
@@ -101,45 +104,26 @@
 
         <div class="product-overlay">
           <p class="product-name text-small">{{ product.name }}</p>
-          <span class="product-price text-small">€{{ product.price }}</span>
+          <span class="product-price text-small">{{ product.price|floatformat:0 }} EUR</span>
         </div>
 
       </div>
+    </a>
     </div>
   {% endfor %}
 </div>
 </section>
-
        <!-- Footer -->
        {% include 'footer.html' %}
         <!-- End of Footer -->
+<div class="shopping-cart-modal" id="cartModal" style="display:none;">
+  {% include 'cart_modal.html' %}
+</div>
+
     <!-- Scripts -->
     {% include 'scripts.html' %}
     <!-- End of Scripts -->
-<script>
-  document.querySelectorAll('.product-slider').forEach(slider => {
-    const slides = slider.querySelectorAll('.slide-image');
-    const prevBtn = slider.querySelector('.prev-btn');
-    const nextBtn = slider.querySelector('.next-btn');
-    let current = 0;
 
-    function showSlide(index) {
-      slides.forEach((slide, i) => {
-        slide.classList.toggle('active', i === index);
-      });
-    }
-
-    prevBtn.addEventListener('click', () => {
-      current = (current - 1 + slides.length) % slides.length;
-      showSlide(current);
-    });
-
-    nextBtn.addEventListener('click', () => {
-      current = (current + 1) % slides.length;
-      showSlide(current);
-    });
-  });
-</script>
 
 </body>
 </html>

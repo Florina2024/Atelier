@@ -16,6 +16,73 @@
 <!--    <a href="#"><i class="icon-user"></i></a>-->
 <!--    <a href="#"><i class="icon-heart"></i></a>-->
 <!--    <a href="#" class="text-sm">Shopping cart</a>-->
-    <a href="#" class="text-sm"><span>Shopping cart <i class="bi bi-handbag"></i> <span id="cart-total">{{ cartItems }}</span></span><span class="underline"></span></a>
+    <a href="#" id="openCartBtn" class="text-sm cart-toggle"><span>Shopping cart <i class="bi bi-handbag"></i> <span id="cart-total">{{ cartItems }}</span></span><span class="underline"></span></a>
   </div>
 </div>
+
+
+<!--<div class="shopping-cart-modal" id="cartModal">-->
+<!--  <div class="modal-header">-->
+<!--    <h2>Shopping cart</h2>-->
+<!--    <button class="close-modal">&times;</button>-->
+<!--  </div>-->
+
+<!--  <div class="cart-items">-->
+<!--    <div class="cart-item">-->
+<!--      {% for item in items %}-->
+<!--        <div class="img-box">-->
+<!--            <img src="{{ item.product.imageURL }}" class="img-fluid">-->
+<!--        </div>-->
+<!--      <div class="item-info">-->
+<!--        <h3>{{ item.product.name }}</h3>-->
+<!--        <p class="variant">Size: {{ item.size }}</p>-->
+<!--      </div>-->
+
+<!--      <div class="item-price">{{ item.product.price|floatformat:0 }} EUR</div>-->
+
+<!--      <div class="item-actions">-->
+<!--        <div class="quantity-selector">-->
+<!--          <button class="decrement">-</button>-->
+<!--          <span class="quantity">1</span>-->
+<!--          <button class="increment">+</button>-->
+<!--        </div>-->
+
+<!--        <div class="action-buttons">-->
+<!--          <button class="edit">Edit</button>-->
+<!--          <button class="favorite">Add to Favorites</button>-->
+<!--          <button class="remove">Remove</button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--     {% endfor %}-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div class="cart-summary">-->
+<!--    <div class="total">-->
+<!--      <span>TOTAL</span>-->
+<!--      <span class="amount">{{ item.product.price|floatformat:0 }} EUR</span>-->
+<!--    </div>-->
+<!--    <p class="vat-notice">VAT Included</p>-->
+<!--  </div>-->
+
+<!--  <div class="checkout-actions">-->
+<!--    <button class="checkout-btn">PROCEED TO CHECKOUT</button>-->
+<!--    <button class="paypal-btn">PayPal</button>-->
+<!--  </div>-->
+
+<!--  <div class="legal-notice">-->
+<!--    <p>By making this payment, you accept the General Conditions of Sale and confirm that you have read and understand the Privacy Policy.</p>-->
+<!--  </div>-->
+
+<!--  <div class="footer-links-cart">-->
+<!--    <a href="/addToCart/" class="view-cart">VIEW MY SHOPPING CART</a>-->
+<!--    <div class="help-section">-->
+<!--      <p>Need help? Contact us</p>-->
+<!--      <p>Monday to Friday from 09:00AM to 8 PM ET.</p>-->
+<!--      <div class="contact-methods">-->
+<!--        <a href="#" class="call">Call</a>-->
+<!--        <a href="#" class="email">Email</a>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->

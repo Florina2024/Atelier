@@ -7,19 +7,9 @@
 <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const menuButton = document.getElementById('menu-button');
-        const collapseLinkMobile = document.querySelector('.collapse-link-mobile');
-
-        menuButton.addEventListener('click', function() {
-            collapseLinkMobile.classList.toggle('show');
-        });
-    });
-</script>
-<script>
 document.addEventListener("DOMContentLoaded", function() {
     window.addEventListener("scroll", function() {
-        var menu = document.querySelector(".menu");
+        var menu = document.querySelector(".low-nav");
         if (window.scrollY > 50) {  // Ndryshon ngjyrën pasi scroll > 50px
             menu.classList.add("scrolled");
         } else {
@@ -29,4 +19,138 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.product-slider').forEach(slider => {
+    const slides = slider.querySelectorAll('.slide-image');
+    const prevBtn = slider.querySelector('.prev-btn');
+    const nextBtn = slider.querySelector('.next-btn');
+    let current = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+    }
+
+prevBtn.addEventListener('click', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  current = (current - 1 + slides.length) % slides.length;
+  showSlide(current);
+});
+
+nextBtn.addEventListener('click', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  current = (current + 1) % slides.length;
+  showSlide(current);
+});
+
+    showSlide(current); // për ta shfaqur slide-in e parë kur ngarkohet faqja
+  });
+});
+</script>
+<script>
+  const cartToggle = document.querySelector('.cart-toggle');
+  const cartModal = document.getElementById('cartModal');
+  const closeBtn = document.querySelector('.close-modal');
+  const openCartBtn = document.getElementById('openCartBtn');
+
+  cartToggle.addEventListener('click', function(e) {
+    e.preventDefault();
+    cartModal.classList.add('open');
+  });
+
+  openCartBtn.addEventListener('click', () => {
+  cartModal.style.display = 'block';  // ose toggle class për animacion
+});
+
+  closeBtn.addEventListener('click', function() {
+    cartModal.classList.remove('open');
+  });
+</script>
+<script>
+document.querySelectorAll('.quantity-selector').forEach(selector => {
+  const decrementBtn = selector.querySelector('.decrement');
+  const incrementBtn = selector.querySelector('.increment');
+  const quantitySpan = selector.querySelector('.quantity');
+
+  const productId = selector.dataset.product;
+  const size = selector.dataset.size;
+
+  decrementBtn.addEventListener('click', () => {
+    let currentQuantity = parseInt(quantitySpan.textContent);
+    if (currentQuantity > 1) {
+      currentQuantity -= 1;
+      quantitySpan.textContent = currentQuantity;
+      updateUserOrder(productId, currentQuantity, size);
+    }
+  });
+
+  incrementBtn.addEventListener('click', () => {
+    let currentQuantity = parseInt(quantitySpan.textContent);
+    currentQuantity += 1;
+    quantitySpan.textContent = currentQuantity;
+    updateUserOrder(productId, currentQuantity, size);
+  });
+});
+</script>
+
+<script>
+// List of major country codes (alphabetical order)
+const countries = [
+    {name: "Albania", code: "+355"},
+    {name: "Australia", code: "+61"},
+    {name: "Austria", code: "+43"},
+    {name: "Belgium", code: "+32"},
+    {name: "Brazil", code: "+55"},
+    {name: "Canada", code: "+1"},
+    {name: "China", code: "+86"},
+    {name: "Croatia", code: "+385"},
+    {name: "Denmark", code: "+45"},
+    {name: "Egypt", code: "+20"},
+    {name: "France", code: "+33"},
+    {name: "Germany", code: "+49"},
+    {name: "Greece", code: "+30"},
+    {name: "India", code: "+91"},
+    {name: "Italy", code: "+39"},
+    {name: "Japan", code: "+81"},
+    {name: "Kosovo", code: "+383"},
+    {name: "Montenegro", code: "+382"},
+    {name: "Netherlands", code: "+31"},
+    {name: "North Macedonia", code: "+389"},
+    {name: "Norway", code: "+47"},
+    {name: "Portugal", code: "+351"},
+    {name: "Qatar", code: "+974"},
+    {name: "Russia", code: "+7"},
+    {name: "Saudi Arabia", code: "+966"},
+    {name: "Serbia", code: "+381"},
+    {name: "Spain", code: "+34"},
+    {name: "Sweden", code: "+46"},
+    {name: "Switzerland", code: "+41"},
+    {name: "Turkey", code: "+90"},
+    {name: "United Arab Emirates", code: "+971"},
+    {name: "United Kingdom", code: "+44"},
+    {name: "United States", code: "+1"}
+];
+
+// Sort alphabetically
+countries.sort((a, b) => a.name.localeCompare(b.name));
+
+// Populate select element
+const select = document.querySelector('.country-code');
+countries.forEach(country => {
+    const option = document.createElement('option');
+    option.value = country.code;
+    option.textContent = `${country.name} ${country.code}`;
+
+    // Set Albania as default selected
+    if (country.code === "+355") {
+        option.selected = true;
+    }
+
+    select.appendChild(option);
+});
+</script>
 

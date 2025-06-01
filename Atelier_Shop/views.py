@@ -36,6 +36,8 @@ def index(request):
         # Handle the cart data
         data = cartData(request)
         cartItems = data['cartItems']
+        order = data['order']
+        items = data['items']
 
         # Handle user authentication and G_Customer for logged-in users or guest users
         g_customer = None  # Default to None
@@ -68,6 +70,7 @@ def index(request):
             'cartItems': cartItems,
             'products1': products_group1,
             'products2': products_group2,
+            'items':items,
             'g_customer': g_customer  # Pass the G_Customer (or guest) info to the template
         }
 

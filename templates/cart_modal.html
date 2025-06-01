@@ -1,0 +1,95 @@
+{% load static %}
+<div class="modal-header">
+  <h2 class="text-sm">Shopping cart <span class="cart-count">{{ cartItems }}</span></h2>
+  <button class="close-modal text-sm">&times;</button>
+</div>
+
+<div class="cart-body">
+  <div class="cart-items">
+    {% for item in items %}
+    <div class="cart-item">
+      <div class="img-box">
+        <img src="{{ item.product.imageURL }}" class="img-fluid">
+      </div>
+      <div class="item-info">
+        <div class="item-actions">
+          <h3 class="text-small">{{ item.product.name }}</h3>
+          <p class="variant text-small">Size: {{ item.size }}</p>
+        </div>
+<div class="quantity-selector">
+  <button
+    class="decrement text-small update-cart"
+    data-action="remove"
+    data-product="{{ item.product.id }}"
+    data-size="{{ item.size }}">
+    -
+  </button>
+
+  <span class="quantity text-small">{{ item.quantity }}</span>
+
+  <button
+    class="increment text-small update-cart"
+    data-action="add"
+    data-product="{{ item.product.id }}"
+    data-size="{{ item.size }}">
+    +
+  </button>
+</div>
+      </div>
+      <div class="item-p">
+        <div class="item-price text-small">{{ item.product.price|floatformat:0 }} EUR</div>
+        <div class="action-buttons">
+          <button class="favorite text-small-h">Add to Favorites</button>
+          <button class="remove-item update-cart text-small-h" data-product="{{ item.product.id }}" data-action="remove">Remove</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="cart-summary">
+    <div class="total">
+      <span class="text-small">TOTAL</span>
+      <span class="amount text-small">{{ order.get_cart_total|floatformat:0 }} EUR</span>
+    </div>
+    <p class="vat-notice text-sm">VAT Included</p>
+  </div>
+
+  <div class="checkout-actions">
+    <a href="/checkout/" class="checkout-btn btn-thm">PROCEED TO CHECKOUT</a>
+    <button class="paypal-btn">PayPal</button>
+  </div>
+
+  <div class="legal-notice">
+    <p class="text-sm">By making this payment, you accept the General Conditions of Sale and confirm that you have read and understand the Privacy Policy.</p>
+  </div>
+
+  <div class="footer-links-cart">
+    <a href="/addToCart/" class="view-cart btn-thm">VIEW MY SHOPPING CART</a>
+    <div class="help-section">
+      <p>Need help? Contact us</p>
+      <div class="help">
+      <p>Monday to Friday from 09:00AM to 8 PM ET.</p>
+      <div class="contact-methods">
+        <a href="#" class="call text-small">Call</a>
+        <a href="#" class="email text-small">Email</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="secure-pay">
+    <h4 class="text-small">Secure payment</h4>
+    <div class="secure">
+    <div class="img-secure">
+      <img src="/static/images/visa.png" alt="visa-logo">
+    </div>
+    <div class="img-secure">
+      <img src="/static/images/mastercard.png" alt="mastercard-logo">
+    </div>
+    <div class="img-secure">
+      <img src="/static/images/paypal.jpeg" alt="paypal-logo">
+    </div>
+  </div>
+  </div>
+</div>

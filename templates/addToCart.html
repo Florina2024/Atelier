@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {% include 'head.html' %}
+    <title>Add to cart &bullet; Atelier</title>
+
+</head>
+<body>
+       <!-- Header -->
+    <header class="index-header">
+        {% include 'navbar.html' %}
+    </header>
+    <!-- End of Header -->
+    <!-- Add to Cart -->
+    <section class="section section-top-low" id="addToCart">
+        <div class="container-one">
+            <div class="list-names">
+                <span class="text-small cap"><a class="no-line">Shop</a> &nbsp; / &nbsp;</span>
+                <span class="text-small cap"><a class="no-line">Add to Bag</a></span>
+            </div>
+            <h3 class="big-italic no-i fs-45 cap mt-15">Let’s Add to Bag</h3>
+            <div class="grid-two mt-40 mb-60">
+                <div class="add-to-cart-box">
+                    <div class="simple-box">
+                        <div class="box-head p-low">
+                            <div class="grid-four-diff">
+                                <div class="grid-item"><h4 class="text-small fs-14 cap mb-0">Items</h4></div>
+                                <div class="grid-item"><h4 class="text-small fs-14 cap mb-0">Price</h4></div>
+                                <div class="grid-item"><h4 class="text-small fs-14 cap mb-0">Quantity</h4></div>
+                                <div class="grid-item"><h4 class="text-small fs-14 cap mb-0">Total</h4></div>
+                            </div>
+                        </div>
+                        {% for item in items %}
+                        <div class="box-item">
+                            <div class="grid-four-diff">
+                                <div class="grid-item ">
+                                    <div class="display-flex ai-center mb-0">
+                                        <div class="img-box">
+                                            <img src="{{ item.product.imageURL }}" class="img-fluid">
+                                        </div>
+                                        <div class="product-features">
+                                            <h5 class="text-small mb5">{{ item.product.name }}</h5>
+                                            <div class="grid-item display-flex ai-center">
+                                                <h4 class="text-small mb5">Size: {{ item.size }}</h4>
+                                            </div>
+                                            <div class="grid-item display-flex ai-center">
+                                                <h4 class="text-small mb-0">Color: {{item.color }} </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grid-item display-flex ai-center">
+                                    <h5 class="text-small mb-0"><span class="span-mobile">Price: </span>{{ item.product.price|floatformat:0 }} €</h5>
+                                </div>
+                                <div class="grid-item display-flex ai-center quantity">
+                                    <h5 class="text-small fs-14 mb-0"><span class="span-mobile">Quantity: </span>{{ item.quantity }}</h5>
+                                </div>
+                                <div class="grid-item display-flex ai-center">
+                                    <h4 class="text-small mb-0"><span class="span-mobile">Total: </span>{{ item.get_total|floatformat:2 }} €</h4>
+                                    <!--<img data-product="{{ item.product.id }}" data-action="remove" class="chg-quantity update-cart" src="{% static 'images/minus.png' %}">-->
+                                    <img src="{% static 'images/delete.png' %}" class="remove-item update-cart" data-product="{{ item.product.id }}" data-action="remove" alt="Delete">
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <div class="simple-box b-bottom order-summary">
+                        <div class="box-head p-low">
+                            <h4 class="text-small cap fs-14 mb-0">Order Summary</h4>
+                        </div>
+                        <div class="display-grid sb">
+                            <div>
+                                {% if discount %}
+                                {{ discount }}
+                                {% endif %}
+                                <div class="box-item no-b display-flex sb">
+                                    <h5 class="text-small mb-0">Items:</h5>
+                                    <h4 class="text-small mb-0">{{ order.get_cart_items }}</h4>
+                                </div>
+                                <div class="box-item display-flex sb">
+                                    <h5 class="text-small mb-0">Subtotal:</h5>
+                                    <h4 class="text-small mb-0">{{ order.get_cart_total|floatformat:2 }} €</h4>
+                                </div>
+                                <div class="box-item no-b display-flex sb mt-10">
+                                    <h4 class="text-small cap mb-0">Total:</h4>
+                                    <h4 class="text-small mb-0">{{ order.get_cart_total|floatformat:2 }} €</h4>
+                                </div>
+                            </div>
+                            <div class="box-item mt-40 no-b">
+                                <a class="text-small btn-thm full cap" href="/checkout/">Checkout</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-30" id="apply-coupon">
+                        <h4 class="text-small fs-14 cap mb-20">Do you have a coupon?</h4>
+                        <div class="display-message hidden mb-20" id="error-message">
+                            <h4 class="text-small fs-14 cap red">Coupon Code is missing, try again!</h4>
+                        </div>
+                        <div class="display-message hidden mb-20" id="error-message2">
+                            <h4 class="text-small fs-14 cap red">This Coupon Code is not valid!</h4>
+                        </div>
+                        <form id="cupon" class="mt-10">
+                            <input placeholder="Enter Cupon Code" name="discount" id="cupon" required>
+                            <button class="text-small btn-thm cap" id="apply-cupon">Apply Coupon</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+{#            <h3 class="big-italic no-i fs-45 cap mt-15">Your Bag is empty!</h3>#}
+{#            <div class="mt-40">#}
+{#                <div class="display-flex">#}
+{#                    <h5 class="text-small cap mb-0">Time to add items to your bag!</h5>#}
+{#                    <h4 class="text-small cap mb-0">&nbsp;&nbsp;<a href="/shop/" class="a-line">Click Here to Shop</a></h4>#}
+{#                </div>#}
+{#            </div>#}
+        </div>
+    </section>
+<div class="shopping-cart-modal" id="cartModal" style="display:none;">
+  {% include 'cart_modal.html' %}
+</div>
+    <!-- End of Add to Cart -->
+</body>
+    <!-- Footer -->
+    <footer>
+        {% include 'footer.html' %}
+    </footer>
+    <!-- End of Footer -->
+
+    <!-- Scripts -->
+    {% include 'scripts.html' %}
+    <!-- End of Scripts -->
+
+    <script type="text/javascript">
+        var total = '{{ order.get_cart_total }}'
+        var cuponForm = document.getElementById('cupon');
+
+
+        cuponForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submitted.');
+        });
+
+        document.getElementById('apply-cupon').addEventListener('click', function (e){
+            submitCupon();
+        });
+
+        function submitCupon() {
+            console.log('Cupon button clicked')
+
+            var cuponInfo = {
+                'discount': null,
+                'total': total,
+            };
+
+            cuponInfo.discount = cuponForm.discount.value;
+
+            if (cuponForm.discount.value!==''){
+                {% for c in all_cupons %}
+                    if (cuponForm.discount.value === '{{ c.code }}'){
+                        let url = '/process_cupon/'
+                        fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type':'application/json',
+                                'X-CSRFToken':csrftoken,
+                            },
+                            body:JSON.stringify({'cuponForm':cuponInfo}),
+                        })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            discount_cupon = cuponInfo.discount
+                            console.log('Success:', data);
+                            {#alert('Transaction completed')#}
+                            document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+                            window.location.href = "/checkout_process/" + discount_cupon
+                        })
+                    }
+                    else{
+                        document.getElementById('error-message2').classList.remove('hidden');
+                    }
+                {% endfor %}
+            }
+            else {
+               document.getElementById('error-message').classList.remove('hidden');
+            }
+        }
+    </script>
+
+</html>

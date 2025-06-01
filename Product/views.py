@@ -285,17 +285,30 @@ def product(request, product_id):
         product = get_object_or_404(D_Product, id=product_id)
         # Merrni galerinë, ngjyrat dhe madhësitë për këtë produkt
         gallery = E_Product_Gallery.objects.filter(product=product)
-        sizes = E_Product_Size.objects.filter(product=product).values_list('size', flat=True)
+        sizes = E_Product_Size.objects.filter(product=product)
+        colors = E_Product_Color.objects.filter(product=product).select_related('color')
         latest_collection = C_Collection.objects.order_by('-created_at').first()
+        similar_products = D_Product.objects.filter(subcategory=product.subcategory).exclude(id=product.id)[:3]
+        # Recently viewed logic
+        recently_viewed = request.session.get('recently_viewed', [])
+        if product_id in recently_viewed:
+            recently_viewed.remove(product_id)
+        recently_viewed.insert(0, product_id)
+        if len(recently_viewed) > 5:  # Limito në 6 produkte
+            recently_viewed = recently_viewed[:4]
+        request.session['recently_viewed'] = recently_viewed
+        recently_viewed_products = D_Product.objects.filter(id__in=recently_viewed).exclude(id=product.id)
 
         data = cartData(request)
         cartItems = data['cartItems']
+        order = data['order']
+        items = data['items']
 
         products = D_Product.objects.filter(subcategory_id=product.subcategory.id)
         context = {'categories': categories, 'subcategories': subcategories, 'collections': collections, 'product': product,
-                   'shipping': shipping1, 'gallery': gallery, 'latest_col': latest_col, 'products': products, 'sizes': sizes,
-                   'cartItems': cartItems, 'latest_collection': latest_collection, 'footer': footer1}
-        return render(request, 'product.html', context)
+                   'shipping': shipping1, 'colors': colors, 'gallery': gallery, 'latest_col': latest_col, 'products': products, 'sizes': sizes,
+                   'cartItems': cartItems, 'items':items, 'latest_collection': latest_collection, 'recently_viewed_products':recently_viewed_products, 'similar_products':similar_products, 'footer': footer1}
+        return render(request, 'product_details.html', context)
 
 def addToCart(request):
     if request.method == 'GET':
@@ -320,6 +333,31 @@ def addToCart(request):
         context = {'categories': categories, 'subcategories': subcategories, 'collections': collections, 'product': product, 'shipping': shipping1,
                    'latest_col': latest_col, 'latest_collection':latest_collection, 'cartItems': cartItems, 'items': items, 'order': order, 'footer': footer1, 'all_cupons': all_cupons}
         return render(request, 'addToCart.html', context)
+
+def cart_modal(request):
+    if request.method == 'GET':
+        categories = A_Category.objects.all()
+        subcategories = B_Subcategory.objects.all()
+        collections = reversed(C_Collection.objects.all())
+        shipping = S_Shipping.objects.all()
+        shipping1 = shipping[0] if shipping else None
+        footer = Z_Contact.objects.all()
+        footer1 = footer[0] if footer else None
+        latest_collection = C_Collection.objects.order_by('-created_at').first()
+
+        latest_col = C_Collection.objects.last()
+
+        data = cartData(request)
+        cartItems = data['cartItems']
+        order = data['order']
+        items = data['items']
+        total = order.get_cart_total if order else 0
+
+        all_cupons = K_Cupon.objects.all()
+
+        context = {'categories': categories, 'subcategories': subcategories, 'collections': collections, 'product': product, 'shipping': shipping1,
+                   'latest_col': latest_col, 'latest_collection':latest_collection, 'total': total, 'cartItems': cartItems, 'items': items, 'order': order, 'footer': footer1, 'all_cupons': all_cupons}
+        return render(request, 'cart_modal.html', context)
 
 @csrf_protect
 def apply_cupon(request):
@@ -421,45 +459,74 @@ def checkout(request):
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 
-@csrf_protect
+# @csrf_protect
+# def update_item(request):
+#     if request.method == "POST":
+#         try:
+#             data = json.loads(request.body)
+#             productId = data.get('productId')  # Përdor `.get()` për të shmangur KeyError
+#             action = data.get('action')
+#             size = data.get('size', None)  # Merr size ose vendos None si default
+#
+#             print(f"Received: Product ID: {productId}, Action: {action}")
+#             print('Size:', size)
+#
+#             customer = request.user.g_customer
+#             product = D_Product.objects.get(id=productId)
+#             order, created = H_Order.objects.get_or_create(customer=customer, complete=False)
+#
+#             # Sigurohu që size nuk është bosh ose None
+#             if size:
+#                 orderItem, created = I_OrderItem.objects.get_or_create(order=order, product=product, size=size)
+#             else:
+#                 orderItem, created = I_OrderItem.objects.get_or_create(order=order, product=product)
+#
+#             if action == 'add':
+#                 orderItem.quantity += 1
+#             elif action == 'remove':
+#                 orderItem.quantity -= 1
+#
+#             orderItem.save()
+#
+#             if orderItem.quantity <= 0:
+#                 orderItem.delete()
+#
+#             return JsonResponse({'message': 'Item updated successfully'}, status=200)
+#
+#         except Exception as e:
+#             print(f"Error: {str(e)}")
+#             return JsonResponse({'error': str(e)}, status=500)
+#
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
 def update_item(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            productId = data.get('productId')  # Përdor `.get()` për të shmangur KeyError
-            action = data.get('action')
-            size = data.get('size', None)  # Merr size ose vendos None si default
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        productId = data.get('productId')
+        action = data.get('action')
+        size = data.get('size')
 
-            print(f"Received: Product ID: {productId}, Action: {action}")
-            print('Size:', size)
+        product = D_Product.objects.get(id=productId)
 
-            customer = request.user.g_customer
-            product = D_Product.objects.get(id=productId)
-            order, created = H_Order.objects.get_or_create(customer=customer, complete=False)
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+        order, created = H_Order.objects.get_or_create(session_key=session_key, complete=False)
 
-            # Sigurohu që size nuk është bosh ose None
-            if size:
-                orderItem, created = I_OrderItem.objects.get_or_create(order=order, product=product, size=size)
+        order_item, created = I_OrderItem.objects.get_or_create(order=order, product=product, size=size)
+
+        if action == 'add':
+            order_item.quantity += 1
+            order_item.save()
+        elif action == 'remove':
+            order_item.quantity -= 1
+            if order_item.quantity <= 0:
+                order_item.delete()
             else:
-                orderItem, created = I_OrderItem.objects.get_or_create(order=order, product=product)
+                order_item.save()
 
-            if action == 'add':
-                orderItem.quantity += 1
-            elif action == 'remove':
-                orderItem.quantity -= 1
-
-            orderItem.save()
-
-            if orderItem.quantity <= 0:
-                orderItem.delete()
-
-            return JsonResponse({'message': 'Item updated successfully'}, status=200)
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-            return JsonResponse({'error': str(e)}, status=500)
-
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+        return JsonResponse({'message': 'Quantity updated'})
 
 @csrf_exempt
 def process_cupon(request):
@@ -522,6 +589,13 @@ def checkout_process(request, cupon):
                        'discount': discount, 'new_total': new_total, 'coupons': coupons}
             return render(request, 'checkout.html', context)
         else:
+            session_key = request.session.session_key
+            if not session_key:
+                request.session.create()
+
+            order = H_Order.objects.filter(session_key=session_key, complete=False).first()
+            items = order.i_orderitem_set.all() if order else []
+            cartItems = sum([item.quantity for item in items]) if order else 0
             total_order = float(order['get_cart_total'])
             discount = float((total_order * cupon.discount) / 100)
             new_total = float(total_order - discount) +  shipping_fee

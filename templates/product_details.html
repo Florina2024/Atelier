@@ -1,0 +1,433 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {% include 'head.html' %}
+    <title>{{ product.name }} &bullet; Atelier</title>
+<style>
+.low-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background-color: transparent;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+/* Kur scroll bëhet poshtë */
+.low-nav.scrolled {
+  background-color: rgba(255, 255, 255, 0.95); /* ose rgba(0, 0, 0, 0.85) për dark mode */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);}
+        .p-info.active p{
+            margin-bottom: 0;
+        }
+        #latest-collection .background{
+            background-image: url("{{ latest_col.main_image_large.url }}");
+        }
+        {% for c in colors %}
+            .p-f-color span#{{ c.color.color }}{
+                background: {{ c.color.code }};
+            }
+        {% endfor %}
+        .product-slider {
+            position: relative;
+            width: 100%;
+            height: 800px;
+            overflow-y: visible!important;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            max-height: 100vh;
+        }
+        .section {padding-top:0!important; padding-left:0!important;}
+.product-slider .prev-btn,
+.product-slider .next-btn {
+    color: black !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: block !important;
+    z-index: 10000 !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    cursor: pointer !important;
+    font-size: 50px !important;
+    font-weight: 200 !important;
+    user-select: none;
+}
+.product-slider .prev-btn {
+    left: 10px;
+}
+.product-slider .next-btn {
+    right: 10px;
+}
+.product-slider {
+    position: relative;
+    width: 100%;
+    height: 800px;
+    max-height: 100vh;
+}
+.slider-wrapper img {
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.slider-wrapper {
+    display: flex;
+    overflow-x: scroll; /* scroll horizontal për imazhet */
+    scroll-behavior: smooth;
+    height: 100%;
+}
+.similar{
+   margin: 50px 10px;
+}
+.similar h4{padding: 0 30px 30px 30px; font-weight:200;letter-spacing:1px;}
+.product-info{padding:10px;}
+.product-info p{margin-bottom: 0!important;font-weight:200;letter-spacing:1px;font-size:11px;}
+.product-info span{color:gray;font-weight:300;letter-spacing:1px;}
+.color-box {
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  z-index: 5; /* shto z-index më të lartë */
+}
+.product-item:hover .color-box{
+  opacity: 1;
+  visibility: visible;
+}
+.recently-viewed .product-slider .prev-btn,
+.recently-viewed .product-slider .next-btn {
+  opacity: 0!important;
+  visibility: hidden !important;
+  transition: opacity 0.5s ease, visibility 0.5s ease;}
+.recently-viewed .product-slider:hover .prev-btn,
+.recently-viewed .product-slider:hover .next-btn {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+.recently-viewed {margin: 0 10px 50px 10px; padding:0;}
+.recently-viewed h4{padding: 0 30px 30px 30px; font-weight:200;letter-spacing:1px;}
+.recently-viewed .product-slider {height:500px;overflow: hidden !important;}
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="low-nav">
+        {% include 'navbar.html' %}
+    </header>
+    <!-- End of Header -->
+
+    <!-- Shop Top -->
+    <section class="section section-top-low" id="product-temp">
+        <div class="container-one">
+            <div class="grid-two">
+                <div class="product-gallery">
+                    <div class="main-img">
+                      <div class="product-slider">
+  <!-- Main Image first -->
+  {% if product.main_image %}
+    <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="slide-image active">
+  {% endif %}
+  <!-- Other gallery images -->
+  {% for image in product.images.all %}
+    <img src="{{ image.image.url }}" alt="{{ product.name }}" class="slide-image">
+  {% endfor %}
+
+  <!-- Slider Controls -->
+  <button class="prev-btn"></button>
+  <button class="next-btn"></button>
+</div>
+                    </div>
+                </div>
+                <div class="product-content">
+                    <div class="p-name text-small mb-10">
+                       <a href="{% url 'collection_page' collection_slug=product.collection.slug %}" class="text-small cap">
+                         {{ product.collection.collection }} Collection / {{ product.subcategory.category.category }} / {{ product.subcategory.subcategory }}
+                       </a>
+                    </div>
+                    <h2 class="title-fs-40 text-sm mb-60">{{ product.name }} </h2>
+                    <div class="main-img-mobile mb-30">
+                        <img src="{{ product.main_image.url }}" class="img-fluid">
+                    </div>
+                    <div class="p-price mb-60">
+                        <h3 class="text-sm fs-30">{{ product.price|floatformat:0 }} EUR</h3>
+                    </div>
+                    <div class="display-flex sb mb-60">
+                        <div class="product-feature">
+                            <div class="p-f-size display-flex mb-30">
+                                <div class="display-flex sb">
+                                    {% for s in sizes %}
+                                        <input class="hidden" type="radio" name="p_size" value="{{ s.size }}" id="p-size{{ s.size }}">
+                                        <span class="text-sm p-size" id="{{ s.size }}" onclick="document.getElementById('p-size{{ s.size }}').checked = true;change('{{ s.size }}')">{{ s.size }}</span>
+                                    {% endfor %}
+                                    <input class="hidden" type="text" name="final_size" id="final_size" value=""><br>
+                                </div>
+                            </div>
+<div class="color-names">
+    {% for c in colors %}
+    <div class="color-container">
+        <input class="hidden" type="radio" name="p_color" value="{{ c.color.color }}" id="p-color{{ c.color.color }}">
+        <div class="p-color" onclick="
+            document.getElementById('p-color{{ c.color.color }}').checked = true;
+            changeColor('{{ c.color.color }}');
+        ">
+            <span class="tooltip text-small">{{ c.color.color }}</span>
+            <span class="color-circle" style="background: {{ c.color.code }}"></span>
+        </div>
+    </div>
+    {% endfor %}
+    <input class="hidden" type="text" name="final_color" id="final_color" value=""><br>
+</div>
+                        </div>
+                        <div>
+                            <h5><a href="/size_guide" target="_blank" class="text-small-h a-line">Size Guide</a></h5>
+                        </div>
+                    </div>
+                    <div class="loading-message hidden" id="loading-message">
+                        <h4 class="text-small fs-14 cap">Please make sure you have selected size and color.</h4>
+                    </div>
+                    <div id="add-message" class="mb-30 hidden">
+                        <h4 class="text-small fs-14 cap mb-0">Item successfully added to cart!</h4>
+                    </div>
+                    <a id="add-link" class="text-sm cap add-to-cart full mb-30"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+</svg>
+</i> Add to Cart • {{ product.price|floatformat:0 }} EUR</a>
+                    <button id="add-button" data-product="{{ product.id }}" data-action="add" data-size="" data-color="" class="text-sm cap add-to-cart full update-cart mb-30 hidden"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+</svg>
+ Add to Cart • {{ product.price|floatformat:0 }} EUR</button>
+                    <div class="product-information">
+                            <div class="p-info mb-20 active" id="p-info-one" data-title="Description" data-content="{{ product.description|safe }}">
+                            <div class="display-flex">
+                                <h4 class="text-small-h cap mb-0">Description</h4>
+                            </div>
+                            <p class="simple-text mt-15 mb-0"></p>
+                        </div>
+                           <div class="p-info mb-20 active" id="p-info-two" data-title="Details" data-content="{{ product.details|safe }}">
+                            <div class="display-flex">
+                                <h4 class="text-small-h cap mb-0">Details</h4>
+                            </div>
+                            <p class="simple-text mt-15 mb-0"></p>
+                        </div>
+                            <div class="p-info mb-20 active" id="p-info-three" data-title="Shipping" data-content="{{ shipping.description|safe }}">
+                            <div class="display-flex ">
+                                <h4 class="text-small-h cap mb-0">Shipping</h4>
+
+                            </div>
+                            <p class="simple-text mt-15 mb-0"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End of Shop Top -->
+
+    {% if products %}
+    <!-- Similar Products -->
+    <section class="section similar" id="similar-products">
+        <div class="container-one">
+            <div class="display-flex sb mb-60">
+                <h4 class="big-italic text-small">Complete the look</h4>
+            </div>
+       <div class="product-row row-small">
+    {% for product in similar_products %}
+      <div class="product-item small">
+        <a href="{% url 'product' product.id %}">
+          <div class="image-wrapper">
+            {% if product.main_image %}
+              <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="product-image">
+            {% endif %}
+          </div>
+          <div class="color-box">
+           {% for color_link in product.e_product_color_set.all %}
+              <span class="color-square" style="background: {{ color_link.color.code }}"></span>
+           {% endfor %}
+        </div>
+          <div class="product-info">
+            <p class="product-name text-xs">{{ product.name }}</p>
+            <span class="product-price text-xs">{{ product.price|floatformat:0 }} EUR</span>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+
+        </div>
+    </section>
+    {% endif %}
+    <!-- End of Similar Products -->
+    <!-- Recently Viewed -->
+    {% if recently_viewed_products %}
+    <section class="section recently-viewed">
+       <div class="container-one">
+    <div class="display-flex sb mb-60">
+      <h4 class="big-italic text-small">Recently viewed</h4>
+    </div>
+    <div class="product-row row-small">
+      {% for product in recently_viewed_products %}
+      <div class="product-item small">
+        <a href="{% url 'product' product.id %}">
+          <div class="image-wrapper">
+        <div class="product-slider">
+  <!-- Main Image first -->
+  {% if product.main_image %}
+    <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="slide-image active">
+  {% endif %}
+  <!-- Other gallery images -->
+  {% for image in product.images.all %}
+    <img src="{{ image.image.url }}" alt="{{ product.name }}" class="slide-image">
+  {% endfor %}
+
+  <!-- Slider Controls -->
+  <button class="prev-btn"></button>
+  <button class="next-btn"></button>
+</div>
+          </div>
+          <div class="color-box">
+           {% for color_link in product.e_product_color_set.all %}
+              <span class="color-square" style="background: {{ color_link.color.code }}"></span>
+           {% endfor %}
+        </div>
+          <div class="product-info">
+            <p class="product-name text-xs">{{ product.name }}</p>
+            <span class="product-price text-xs">{{ product.price|floatformat:0 }} EUR</span>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+    </section>
+    {% endif %}
+     <!-- End of Recently Viewed -->
+<div id="side-modal" class="side-modal">
+  <div class="side-modal-content">
+    <span class="close-modal">&times;</span>
+    <div id="modal-content-area"></div>
+  </div>
+</div>
+    <!-- Footer -->
+    <footer>
+        {% include 'footer.html' %}
+    </footer>
+    <!-- End of Footer -->
+<div class="shopping-cart-modal" id="cartModal" style="display:none;">
+  {% include 'cart_modal.html' %}
+</div>
+    <!-- Scripts -->
+    {% include 'scripts.html' %}
+    <!-- End of Scripts -->
+
+    <!-- Filter -->
+    <script>
+        $(document).ready(function(){
+            $("#filter").click(function(){
+                $("#filter-option").toggleClass('hidden');
+            });
+        });
+    </script>
+    <!-- End of Filter -->
+
+    <script>
+document.querySelectorAll('.product-information .p-info').forEach(item => {
+    item.addEventListener('click', function () {
+        const title = this.getAttribute('data-title');
+        const content = this.getAttribute('data-content');
+        document.getElementById('modal-content-area').innerHTML = `
+            <h3>${title}</h3>
+            <div>${content}</div>`;
+        document.getElementById('side-modal').classList.add('show');
+    });
+});
+
+document.querySelector('.close-modal').addEventListener('click', function () {
+    document.getElementById('side-modal').classList.remove('show');
+});
+</script>
+
+    <script type="text/javascript">
+        function change(size){
+            document.getElementById('final_size').value=size;
+            document.getElementById('add-button').dataset.size = size + ', ';
+
+            var all_sizes = document.querySelectorAll(".p-size");
+            for(i=0; i<all_sizes.length; i++){
+                if (all_sizes[i].id === size){
+                    document.getElementById(size).classList.add('active');
+                }
+                else{
+                    all_sizes[i].classList.remove('active');
+                }
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        function changeColor(color){
+            document.getElementById('final_color').value=color;
+            document.getElementById('add-button').dataset.color = color + ', ';
+
+            var all_color = document.querySelectorAll(".p-color");
+            for(i=0; i<all_color.length; i++){
+                if (all_color[i].id === color){
+                    document.getElementById(color).classList.add('active');
+                }
+                else{
+                    all_color[i].classList.remove('active');
+                }
+            }
+        }
+    </script>
+
+    <script>
+        var size = document.getElementById('final_size').value
+        var color = document.getElementById('final_color').value
+        $("#add-link").click(function(){
+            if((document.getElementById('add-button').dataset.size === null || document.getElementById('add-button').dataset.size === "") || (document.getElementById('add-button').dataset.color === null || document.getElementById('add-button').dataset.color === "" )){
+                document.getElementById('loading-message').classList.remove('hidden');
+            }
+            else{
+                document.getElementById('add-link').classList.add('hidden');
+                document.getElementById('add-button').classList.remove('hidden');
+            }
+        })
+    </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const slider = document.querySelector('.product-slider');
+        const slides = slider.querySelectorAll('.slide-image');
+        const prevBtn = slider.querySelector('.prev-btn');
+        const nextBtn = slider.querySelector('.next-btn');
+        let currentIndex = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+                slide.style.display = i === index ? 'block' : 'none';
+            });
+        }
+
+        showSlide(currentIndex); // Shfaq sliden e parë
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            showSlide(currentIndex);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            showSlide(currentIndex);
+        });
+    });
+</script>
+</body>
+</html>

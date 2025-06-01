@@ -119,6 +119,7 @@ class H_Order(models.Model):
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False, null=True, blank=False)
     transaction_id = models.CharField(max_length=100, null=True)
+    session_key = models.CharField(max_length=40, null=True, blank=True)
 
     @property
     def get_cart_total(self):

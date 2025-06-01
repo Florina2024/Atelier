@@ -1,0 +1,608 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {% include 'head.html' %}
+    <title>Checkout &bullet; Atelier</title>
+<style>
+    .grid-two{display: flex; align-items:center;justify-content:space-between; padding-top: 25px;gap:20px;}
+    .one {padding-top: 25px;}
+.jacquemus-checkout {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        color: #000;
+    }
+    .checkout-header h1 {
+        font-size: 24px;
+        font-weight: 400;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+  #checkout{padding: 0 10px;}
+   .checkout-container {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    }
+    .order-summary{margin-left:20px;}
+    .checkout-form, .order-summary {
+       padding: 30px 20px;
+    }
+    .checkout-form{ border-right: 1px solid gray;}
+    .form-section .logo {padding-bottom: 20px;font-family: var(--title);font-size: 24px;text-decoration: none;color: black;}
+    .form-section, .order-item, .order-total, .shipping-info, .help-section {
+        margin-bottom: 30px;
+    }
+    h2 {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+    h3 {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+    .divider {
+        height: 1px;
+        background-color: #e5e5e5;
+        margin: 25px 0;
+    }
+    .form-group {
+        margin-bottom: 20px;
+        width:100%;
+    }
+    input[type="text"], input[type="email"], input[type="tel"], select {
+        width: 100%;
+        padding: 5px;
+        border: none;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 12px;
+        font-weight:300;
+    }
+    select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>") no-repeat;
+        background-position: right center;
+    }
+    .shipping-option, .payment-method {
+        margin-bottom: 15px;
+    }
+    .shipping-option label, .payment-method label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        cursor: pointer;
+    }
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+    }
+    .item-details h3 {
+        font-weight: 400;
+    }
+    .item-details p, .item-price p {
+        font-size: 12px;
+        color: #666;
+        margin: 5px 0;
+    }
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+    .grand-total {
+        font-weight: 500;
+    }
+    .shipping-info p, .help-section p {
+        font-size: 12px;
+        color: #666;
+        margin: 5px 0;
+        line-height: 1.5;
+    }
+    .item-image .img-fluid {
+    max-width: 100%;
+    height: 200px;
+    width:150px;
+    object-fit:cover;
+    object-position:center;
+}
+.checkbox-group, .radio-group {
+        margin-bottom: 15px;
+    }
+    .checkbox-group input, .radio-group input {
+        margin-right: 10px;
+    }
+    .checkbox-group label, .radio-group label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        font-size: 13px;
+    }
+    .radio-group label > div {
+        display: flex;
+        flex-direction: column;
+    }
+    .subtext {
+        font-size: 11px;
+        color: #666;
+        margin-top: 3px;
+        font-weight: normal;
+    }
+    .grid-two h4 a{color:var(--dark);}
+</style>
+</head>
+<body>
+    <!-- Checkout -->
+    <section class="section section-top-low" id="checkout">
+    <div class="checkout-container container-one">
+        <!-- Left Column -->
+        <div class="checkout-form">
+            <!-- Contact Information -->
+            <div class="form-section">
+                <a href="/" class="logo">JACQUEMUS</a>
+              <form id="form" method="POST">
+                 {% csrf_token %}
+                <div class="grid-two">
+                <div class="form-group">
+                   <input type="text" class="text-small" name="name" placeholder="First Name *"  maxlength="15" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="text-small" name="surname" placeholder="Last Name *"  maxlength="15" required>
+                </div>
+                </div>
+                <div class="grid-two">
+                <div class="form-group">
+                    <select name="state">
+                        <option value="" disabled selected>Country/Region *</option>
+                        <option value="AL">Albania</option>
+                        <!-- Add other countries -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="city" placeholder="City *">
+                </div>
+                </div>
+                <div class="grid-two">
+                   <div class="form-group">
+                        <input type="text" class="text-small" name="address" placeholder="Address *"  maxlength="100" required>
+                   </div>
+                   <div class="form-group">
+                       <input type="email" class="text-small" name="email" placeholder="Email *"  maxlength="60" required>
+                   </div>
+                </div>
+                <div class="form-group one">
+                    <input type="text" class="text-small" name="zipcode" placeholder="Zipcode *"  maxlength="30" required>
+                </div>
+                <div class="grid-two">
+                 <div class="form-group">
+                     <select class="country-code" name="country_code">
+                         <option value="" disabled selected>Select Country</option>
+                         <option value="+355">Albania +355</option>
+                         <!-- Other countries will be dynamically inserted -->
+                     </select>
+                 </div>
+                 <div class="form-group">
+                    <input class="text-small" type="tel" name="phone" placeholder="695600760" pattern="[0-9]{9}" required>
+                </div>
+                </div>
+              </form>
+                <div class="display-message hidden mt-30" id="error-message">
+                     <h4 class="text-small fs-14 cap red">Please make sure you have entered all the required data!</h4>
+                </div>
+                 <div class="box-element mt-30" id="payment-info">
+                 <div class="inline-box">
+                     {% if order and order.id %}
+                     <a class="text-small cap btn-thm btn-padding" id="make-payment" href="{% url 'initiate_payment' order.id %}">Online Payment</a>
+                     {% else %}
+                     <p>No active order found.</p>
+                        {% endif %}
+                </div>
+               </div>
+            </div>
+            <!-- Shipping Method -->
+     <div class="form-section">
+                <h2 class="text-small">Delivery method</h2>
+                <div class="radio-group">
+                    <input type="radio" id="ups-standard" name="delivery" checked>
+                    <label for="ups-standard">
+                        <div class="column">
+                            <span>UPS Standard</span>
+                            <span class="subtext">Estimated delivery date: from 08/06/2025</span>
+                        </div>
+                        <span>FREE</span>
+                    </label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" id="ups-express" name="delivery">
+                    <label for="ups-express">
+                        <div>
+                            <span>UPS Express Saver</span>
+                            <span class="subtext">Estimated delivery date: from 07/06/2025</span>
+                        </div>
+                        <span>10 EUR</span>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column -->
+        <div class="order-summary">
+            <div class="grid-two">
+            <h2>Order summary</h2>
+            <h4 class="text-sm"><a href="/addToCart/">Edit cart</a></h4>
+            </div>
+            {% for item in items %}
+            <div class="order-item">
+                <div class="item-image">
+                    <img src="{{ item.product.imageURL }}" class="img-fluid">
+                </div>
+                <div class="item-details">
+                    <h3>{{ item.product.name }}</h3>
+                    <p>Size: {{ item.size }}</p>
+                    <p>Color:{{ item.color }}</p>
+                    <p>Qty: {{ item.quantity }}</p>
+                </div>
+                <div class="item-price">
+                    <p>{{ item.product.price|floatformat:0 }} EUR</p>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="divider"></div>
+
+            <div class="order-total">
+                <div class="total-row">
+                    <span>Subtotal</span>
+                    <span>{{ order.get_cart_total|floatformat:2 }} EUR</span>
+                </div>
+                <div class="total-row">
+                    <span>Shipping</span>
+                    <span>FREE</span>
+                </div>
+                <div class="total-row grand-total">
+                    <span>TOTAL</span>
+                    <span>{{ new_total|floatformat:2 }} EUR</span>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="shipping-info">
+                <h3>Free shipping and returns</h3>
+                <p>Orders are generally delivered between 3-4 business days.</p>
+                <p>14 days return policy from delivery date.</p>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="help-section">
+                <h3>Need help? Contact us</h3>
+                <p>Monday to Friday from 09:00AM to 8 PM ET.</p>
+                <p>Call +1 123 456 7890</p>
+                <p>Email contact@jacquemus.com</p>
+            </div>
+        </div>
+    </div>
+</section>
+    <!-- End of Checkout -->
+
+    <!-- Scripts -->
+    {% include 'scripts.html' %}
+    <!-- End of Scripts -->
+
+    <script>
+        $(document).ready(function(){
+        $("#p-info-three").click(function(){
+            $("#p-info-three.p-info").toggleClass('active');
+        });
+    });
+    </script>
+
+     <!-- Payment Script -->
+//     <script type="text/javascript">
+//         var total = parseFloat('{{ order.get_cart_total|add:10 }}');
+//         // var shipping_fee = 10;
+//         // var new_total = parseFloat('{{ new_total }}') + shipping_fee;;
+//         // var total = parseFloat('{{ total }}') + shipping_fee;
+//         console.log('Total value:', total);
+//         // console.log('New Total (from backend or coupon):', '{{ new_total }}');
+//         var form = document.getElementById('form');
+
+
+// form.addEventListener('submit', function(e) {
+//     e.preventDefault();
+//     console.log('Form submitted.');
+//     var formButton = document.getElementById('form-button');
+//     var paymentInfo = document.getElementById('payment-info');
+
+//     if (formButton) {
+//         formButton.classList.add('hidden');
+//     }
+
+//     if (paymentInfo) {
+//         paymentInfo.classList.remove('hidden');
+//     }
+// });
+
+//         document.getElementById('make-payment').addEventListener('click', function (e){
+//             submitFormDataPhysical();
+//         });
+
+//         function submitFormDataPhysical() {
+//             console.log('Physical button clicked')
+//             var p_method = 'Online Payment'
+
+//             var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+//             var userFormData = {
+//                 'name': null,
+//                 'surname': null,
+//                 'email': null,
+
+//                 {% if cupon %}
+//                     'total': '{{ new_total }}',
+//                     {% else %}
+//                     'total': total,
+//                 {% endif %}
+
+//                 'coupon': null,
+//             };
+//             var shippingInfo = {
+//                 'phone': null,
+//                 'address': null,
+//                 'city': null,
+//                 'state': null,
+//                 'zipcode': null,
+//                 'payment_method': p_method,
+//             };
+
+//             userFormData.name = form.name.value;
+//             userFormData.surname = form.surname.value;
+//             userFormData.email = form.email.value;
+
+//             console.log('User Form Data:', userFormData);
+
+//             {% if cupon %}
+//               userFormData.coupon = '{{ cupon.code }}';
+//                 {% else %}
+//               userFormData.coupon = '';
+//             {% endif %}
+
+//             shippingInfo.phone = form.phone.value;
+//             shippingInfo.address = form.address.value;
+//             shippingInfo.city = form.city.value;
+//             shippingInfo.state = form.state.value;
+//             shippingInfo.zipcode = form.zipcode.value;
+//             shippingInfo.payment_method = p_method;
+
+//             console.log('Shipping Information:', shippingInfo);
+
+
+//             if (form.name.value!=='' &&  form.surname.value!=='' && form.email.value!=='' &&  form.city.value!=='' && form.address.value!=='' && form.phone.value!=='' ){
+//                 console.log('Form data to be sent:', userFormData, shippingInfo);
+//                 // let url = '/process_order/'
+//                 // fetch(url, {
+//                 //     method: 'POST',
+//                 //     headers: {
+//                 //         'Content-Type':'application/json',
+//                 //         'X-CSRFToken':csrftoken,
+//                 //     },
+//                 //     body:JSON.stringify({'form':userFormData, 'shipping':shippingInfo}),
+//                 // })
+//                 // .then((response) => response.json())
+//                 //     .then((data) => {
+//                 //         console.log('Success:', data);
+//                 //         localStorage.clear();  // Fshin të gjitha të dhënat nga localStorage
+
+//                 //                 // Opsionale: Pastrimi i të dhënave në sessionStorage (nëse përdoret)
+//                 //         sessionStorage.clear();
+//                 //         cart = {}
+//                 //         alert('Transaction completed')
+//                 //         document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+//                 //         window.location.href = "{% url 'message' %}"
+//                 //     })
+//                 //     .catch((error) => {
+//                 //         console.error('Error:', error);
+//                 //         alert('There was an error processing the order.');
+//                 //     });
+
+// document.getElementById('make-payment').addEventListener('click', function () {
+//     console.log('Make Payment Clicked! ✅'); // Kontrollo në console nëse ky mesazh shfaqet
+
+//     fetch('/processOrder/', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+//         },
+//         body: JSON.stringify({'form': userFormData, 'shipping': shippingInfo})
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         console.log('Server Response:', data); // ✅ Kontrollo çfarë kthen serveri
+//         if (data.redirect_url) {
+//             window.location.href = data.redirect_url;
+//         } else {
+//             alert('Gabim: ' + data.message);
+//         }
+//     })
+//     .catch(error => console.error('Gabim në Fetch:', error));
+// });
+
+//                 // document.getElementById('loading-message').classList.remove('hidden');
+//                 document.getElementById('make-payment').classList.add('hidden');
+//             }
+//             else {
+//                 document.getElementById('error-message').classList.remove('hidden');
+//             }
+//         }
+//         </script>
+
+    <script type="text/javascript">
+        var total = '{{ order.get_cart_total }}'
+        var form = document.getElementById('form');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submitted.');
+            document.getElementById('form-button').classList.add('hidden');
+            document.getElementById('payment-info').classList.remove('hidden');
+        });
+
+        // document.getElementById('make-payment').addEventListener('click', function (e){
+        //     submitFormDataPhysical();
+        // });
+
+
+        // function submitFormDataPhysical() {
+        //     console.log('Physical button clicked')
+        //     var p_method = 'Payment on Delivery'
+
+        //     var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+
+        //     var userFormData = {
+        //         'name': null,
+        //         'surname': null,
+        //         'email': null,
+
+        //         {% if cupon %}
+        //             'total': '{{ new_total }}',
+        //             {% else %}
+        //             'total': total,
+        //         {% endif %}
+
+        //         'coupon': null,
+        //     };
+        //     var shippingInfo = {
+        //         'phone': null,
+        //         'address': null,
+        //         'city': null,
+        //         'state': null,
+        //         'zipcode': null,
+        //         'payment_method': p_method,
+        //     };
+
+        //     userFormData.name = form.name.value;
+        //     userFormData.surname = form.surname.value;
+        //     userFormData.email = form.email.value;
+
+        //     {% if cupon %}
+        //       userFormData.coupon = '{{ cupon.code }}';
+        //         {% else %}
+        //       userFormData.coupon = '';
+        //     {% endif %}
+
+        //     shippingInfo.phone = form.phone.value;
+        //     shippingInfo.address = form.address.value;
+        //     shippingInfo.city = form.city.value;
+        //     shippingInfo.state = form.state.value;
+        //     shippingInfo.zipcode = form.zipcode.value;
+        //     shippingInfo.payment_method = p_method;
+
+        //     if (form.name.value!=='' &&  form.surname.value!=='' && form.email.value!=='' &&  form.city.value!=='' && form.address.value!=='' && form.phone.value!=='' ){
+        //         let url = '/process_order/'
+        //         fetch(url, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type':'application/json',
+        //                 'X-CSRFToken':csrftoken,
+        //             },
+        //             body:JSON.stringify({'form':userFormData, 'shipping':shippingInfo}),
+        //         })
+        //         .then((response) => response.json())
+        //             .then((data) => {
+        //                 console.log('Success:', data);
+        //                 cart = {}
+        //                 alert('Transaction completed')
+        //                 document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+        //                 window.location.href = "{% url 'message' %}"
+        //             })
+        //         document.getElementById('loading-message').classList.remove('hidden');
+        //         document.getElementById('make-payment').classList.add('hidden');
+        //     }
+        //     else {
+        //         document.getElementById('error-message').classList.remove('hidden');
+        //     }
+        // }
+
+        document.getElementById('make-payment').addEventListener('click', function (e) {
+            e.preventDefault();
+            submitFormDataOnline();
+        });
+
+        function submitFormDataOnline() {
+            console.log('Online Payment Button Clicked');
+            var p_method = 'Online Payment';
+            var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            var userFormData = {
+                'name': form.name.value,
+                'surname': form.surname.value,
+                'email': form.email.value,
+                {% if cupon %}
+                    'total': '{{ new_total }}',
+                    'coupon': '{{ cupon.code }}',
+                {% else %}
+                    'total': total,
+                    'coupon': '',
+                {% endif %}
+            };
+
+            var shippingInfo = {
+                'phone': form.phone.value,
+                'address': form.address.value,
+                'city': form.city.value,
+                'state': form.state.value,
+                'zipcode': form.zipcode.value,
+                'payment_method': p_method,
+            };
+            console.log('User Data:', userFormData);
+            console.log('Shipping Info:', shippingInfo);
+
+
+            if (form.name.value && form.surname.value && form.email.value && form.city.value && form.address.value && form.phone.value) {
+                let url = '/process_order_online/';
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({ 'form': userFormData, 'shipping': shippingInfo }),
+                })
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Network response was not ok.');
+                    }
+                })
+                .then((data) => {
+                    console.log('Success:', data.redirect_url);
+                    window.location.href = data.redirect_url;  // Use the redirect URL from the response
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+                document.getElementById('loading-message').classList.remove('hidden');
+                document.getElementById('make-payment').classList.add('hidden');
+            } else {
+                document.getElementById('error-message').classList.remove('hidden');
+            }
+        }
+    </script>
+
+</body>
+</html>

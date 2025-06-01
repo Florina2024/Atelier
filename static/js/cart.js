@@ -76,7 +76,31 @@ function addCookieItem(productId, action, size) {
     }, 1500);
 }
 
-function updateUserOrder(productId, action, size = null) { // Shto size si parametër opsional
+//function updateUserOrder(productId, action, size = null) { // Shto size si parametër opsional
+//    console.log('User is logged in, sending data.');
+//
+//    let url = '/update_item/';
+//    fetch(url, {
+//        method: 'POST',
+//        headers: {
+//            'Content-Type': 'application/json',
+//            'X-CSRFToken': csrftoken
+//        },
+//        body: JSON.stringify({
+//            'productId': productId,
+//            'action': action,
+//            'size': size  // Shto size këtu
+//        })
+//    })
+//    .then(response => response.json())
+//    .then(data => {
+//        console.log('Success:', data);
+//        location.reload();
+//    })
+//    .catch(error => console.error('Error:', error));
+//}
+
+function updateUserOrder(productId, action, size) {
     console.log('User is logged in, sending data.');
 
     let url = '/update_item/';
@@ -89,7 +113,7 @@ function updateUserOrder(productId, action, size = null) { // Shto size si param
         body: JSON.stringify({
             'productId': productId,
             'action': action,
-            'size': size  // Shto size këtu
+            'size': size
         })
     })
     .then(response => response.json())
@@ -99,5 +123,6 @@ function updateUserOrder(productId, action, size = null) { // Shto size si param
     })
     .catch(error => console.error('Error:', error));
 }
+
 
 
