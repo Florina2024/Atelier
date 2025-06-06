@@ -6,32 +6,48 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     {% include 'head.html' %}
     <title>Add to cart &bullet; Atelier</title>
-
+<style>
+    .grid-two{display: grid;grid-template-columns: 1.3fr 1fr;gap:20px;}
+    .section-top-low{padding: 0 2vw 0 2vw;}
+    .logo {  font-family: var(--title);font-size: 24px;text-decoration: none;color: black;}
+    .box-head h3{font-size:14px; margin: 30px 0; font-weight:300;}
+    .ai-center{display: grid;grid-template-columns: 1fr 1.3fr 1fr;}
+    .grid-item{padding-bottom: 20px;}
+    .img-box .img-fluid {
+    max-width: 100%;
+    height: 250px;
+    width: 200px;
+    object-fit: cover;
+    object-position: center;
+}
+.add-to-cart-box{ border-right: 1px solid gray; padding-right:20px;padding-top:20px;}
+.product-features h5{font-size:14px; font-weight:300;letter-spacing:1px;padding-bottom:10px;}
+.grid-p h5 {font-size:12px; font-weight:300;letter-spacing:1px;}
+.grid-i h4 {font-size:10px; font-weight:300;letter-spacing:1px;}
+.quantity-selector{padding-top:10px;}
+.item-p {gap: 35px;}
+.quantity{font-size:12px; font-weight:300;letter-spacing:1px;}
+.total{display: flex; flex-direction:column; align-items:start;}
+.cart-right{padding-top:60px;}
+.box-item h5, .box-item h4{color: #d9d9d9; font-size:11px; font-weight:400;}
+.box-item h2{font-size:22px; font-weight:300;}
+.box-item h3{font-size:14px; font-weight:300;}
+.checkout-actions{padding-top:30px;}
+.simple-box{overflow-y:auto;}
+.display-flex.sb {margin-top: 20px;}
+</style>
 </head>
 <body>
-       <!-- Header -->
-    <header class="index-header">
-        {% include 'navbar.html' %}
-    </header>
     <!-- End of Header -->
     <!-- Add to Cart -->
     <section class="section section-top-low" id="addToCart">
         <div class="container-one">
-            <div class="list-names">
-                <span class="text-small cap"><a class="no-line">Shop</a> &nbsp; / &nbsp;</span>
-                <span class="text-small cap"><a class="no-line">Add to Bag</a></span>
-            </div>
-            <h3 class="big-italic no-i fs-45 cap mt-15">Let’s Add to Bag</h3>
             <div class="grid-two mt-40 mb-60">
                 <div class="add-to-cart-box">
+                    <a href="/" class="logo">JACQUEMUS</a>
                     <div class="simple-box">
                         <div class="box-head p-low">
-                            <div class="grid-four-diff">
-                                <div class="grid-item"><h4 class="text-small fs-14 cap mb-0">Items</h4></div>
-                                <div class="grid-item"><h4 class="text-small fs-14 cap mb-0">Price</h4></div>
-                                <div class="grid-item"><h4 class="text-small fs-14 cap mb-0">Quantity</h4></div>
-                                <div class="grid-item"><h4 class="text-small fs-14 cap mb-0">Total</h4></div>
-                            </div>
+                           <h3 class="text-sm">Your products</h3>
                         </div>
                         {% for item in items %}
                         <div class="box-item">
@@ -43,35 +59,52 @@
                                         </div>
                                         <div class="product-features">
                                             <h5 class="text-small mb5">{{ item.product.name }}</h5>
-                                            <div class="grid-item display-flex ai-center">
+                                            <div class="grid-i display-flex ai-center">
                                                 <h4 class="text-small mb5">Size: {{ item.size }}</h4>
                                             </div>
-                                            <div class="grid-item display-flex ai-center">
+                                            <div class="grid-i display-flex ai-center">
                                                 <h4 class="text-small mb-0">Color: {{item.color }} </h4>
                                             </div>
+                                            <div class="quantity-selector">
+  <button
+    class="decrement text-small update-cart"
+    data-action="remove"
+    data-product="{{ item.product.id }}"
+    data-size="{{ item.size }}">
+    -
+  </button>
+
+  <span class="quantity text-small">{{ item.quantity }}</span>
+
+  <button
+    class="increment text-small update-cart"
+    data-action="add"
+    data-product="{{ item.product.id }}"
+    data-size="{{ item.size }}">
+    +
+  </button>
+</div>
                                         </div>
+                                        <div class="item-p">
+                                <div class="grid-p display-flex">
+                                    <h5 class="text-small mb-0"><span class="span-mobile"></span>{{ item.product.price|floatformat:0 }} EUR</h5>
+                                </div>
+                                <div class="action-buttons">
+                                  <button class="favorite text-small-h">Add to Favorites</button>
+                                  <button class="remove-item update-cart text-small-h" data-product="{{ item.product.id }}" data-action="remove">Remove</button>
+                                </div>
+                                </div>
                                     </div>
-                                </div>
-                                <div class="grid-item display-flex ai-center">
-                                    <h5 class="text-small mb-0"><span class="span-mobile">Price: </span>{{ item.product.price|floatformat:0 }} €</h5>
-                                </div>
-                                <div class="grid-item display-flex ai-center quantity">
-                                    <h5 class="text-small fs-14 mb-0"><span class="span-mobile">Quantity: </span>{{ item.quantity }}</h5>
-                                </div>
-                                <div class="grid-item display-flex ai-center">
-                                    <h4 class="text-small mb-0"><span class="span-mobile">Total: </span>{{ item.get_total|floatformat:2 }} €</h4>
-                                    <!--<img data-product="{{ item.product.id }}" data-action="remove" class="chg-quantity update-cart" src="{% static 'images/minus.png' %}">-->
-                                    <img src="{% static 'images/delete.png' %}" class="remove-item update-cart" data-product="{{ item.product.id }}" data-action="remove" alt="Delete">
                                 </div>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
-                <div>
+                <div class="cart-right">
                     <div class="simple-box b-bottom order-summary">
                         <div class="box-head p-low">
-                            <h4 class="text-small cap fs-14 mb-0">Order Summary</h4>
+                            <h3 class="text-small cap fs-14 mb-0">Shopping cart</h3>
                         </div>
                         <div class="display-grid sb">
                             <div>
@@ -79,45 +112,74 @@
                                 {{ discount }}
                                 {% endif %}
                                 <div class="box-item no-b display-flex sb">
-                                    <h5 class="text-small mb-0">Items:</h5>
-                                    <h4 class="text-small mb-0">{{ order.get_cart_items }}</h4>
+                                    <h5 class="text-small mb-0">{{ order.get_cart_items }} Items</h5>
+                                    <h4 class="text-small mb-0">{{ order.get_cart_total|floatformat:2 }} EURO</h4>
                                 </div>
                                 <div class="box-item display-flex sb">
-                                    <h5 class="text-small mb-0">Subtotal:</h5>
-                                    <h4 class="text-small mb-0">{{ order.get_cart_total|floatformat:2 }} €</h4>
+                                    <h5 class="text-small mb-0">Shipping:</h5>
+                                    <h4 class="text-small mb-0">Calculated at checkout</h4>
                                 </div>
                                 <div class="box-item no-b display-flex sb mt-10">
-                                    <h4 class="text-small cap mb-0">Total:</h4>
-                                    <h4 class="text-small mb-0">{{ order.get_cart_total|floatformat:2 }} €</h4>
+                                    <div class="total">
+                                    <h3 class="text-small cap mb-0">TOTAL</h3>
+                                    <h5 class="text-small">VAT Included</h5>
+                                    </div>
+                                    <h2 class="text-small mb-0">{{ order.get_cart_total|floatformat:2 }} €</h2>
                                 </div>
                             </div>
-                            <div class="box-item mt-40 no-b">
-                                <a class="text-small btn-thm full cap" href="/checkout/">Checkout</a>
-                            </div>
+  <div class="checkout-actions">
+    <a href="/checkout/" class="checkout-btn btn-thm">PROCEED TO CHECKOUT</a>
+    <button class="paypal-btn">PayPal</button>
+  </div>
+
+  <div class="legal-notice">
+    <p class="text-sm">By making this payment, you accept the General Conditions of Sale and confirm that you have read and understand the Privacy Policy.</p>
+  </div>
+
+  <div class="footer-links-cart">
+    <div class="help-section">
+      <p>Need help? Contact us</p>
+      <div class="help">
+      <p>Monday to Friday from 09:00AM to 8 PM ET.</p>
+      <div class="contact-methods">
+        <a href="#" class="call text-small">Call</a>
+        <a href="#" class="email text-small">Email</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="secure-pay">
+    <h4 class="text-small">Secure payment</h4>
+    <div class="secure">
+    <div class="img-secure">
+      <img src="/static/images/visa.png" alt="visa-logo">
+    </div>
+    <div class="img-secure">
+      <img src="/static/images/mastercard.png" alt="mastercard-logo">
+    </div>
+    <div class="img-secure">
+      <img src="/static/images/paypal.jpeg" alt="paypal-logo">
+    </div>
+  </div>
+  </div>
                         </div>
                     </div>
-                    <div class="mt-30" id="apply-coupon">
-                        <h4 class="text-small fs-14 cap mb-20">Do you have a coupon?</h4>
-                        <div class="display-message hidden mb-20" id="error-message">
-                            <h4 class="text-small fs-14 cap red">Coupon Code is missing, try again!</h4>
-                        </div>
-                        <div class="display-message hidden mb-20" id="error-message2">
-                            <h4 class="text-small fs-14 cap red">This Coupon Code is not valid!</h4>
-                        </div>
-                        <form id="cupon" class="mt-10">
-                            <input placeholder="Enter Cupon Code" name="discount" id="cupon" required>
-                            <button class="text-small btn-thm cap" id="apply-cupon">Apply Coupon</button>
-                        </form>
-                    </div>
+<!--                    <div class="mt-30" id="apply-coupon">-->
+<!--                        <h4 class="text-small fs-14 cap mb-20">Do you have a coupon?</h4>-->
+<!--                        <div class="display-message hidden mb-20" id="error-message">-->
+<!--                            <h4 class="text-small fs-14 cap red">Coupon Code is missing, try again!</h4>-->
+<!--                        </div>-->
+<!--                        <div class="display-message hidden mb-20" id="error-message2">-->
+<!--                            <h4 class="text-small fs-14 cap red">This Coupon Code is not valid!</h4>-->
+<!--                        </div>-->
+<!--                        <form id="cupon" class="mt-10">-->
+<!--                            <input placeholder="Enter Cupon Code" name="discount" id="cupon" required>-->
+<!--                            <button class="text-small btn-thm cap" id="apply-cupon">Apply Coupon</button>-->
+<!--                        </form>-->
+<!--                    </div>-->
                 </div>
             </div>
-{#            <h3 class="big-italic no-i fs-45 cap mt-15">Your Bag is empty!</h3>#}
-{#            <div class="mt-40">#}
-{#                <div class="display-flex">#}
-{#                    <h5 class="text-small cap mb-0">Time to add items to your bag!</h5>#}
-{#                    <h4 class="text-small cap mb-0">&nbsp;&nbsp;<a href="/shop/" class="a-line">Click Here to Shop</a></h4>#}
-{#                </div>#}
-{#            </div>#}
         </div>
     </section>
 <div class="shopping-cart-modal" id="cartModal" style="display:none;">
