@@ -10,6 +10,7 @@ from .utils import cookieCart
 from .utils import cartData, guestOrder
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from uuid import UUID
 import hashlib
 import hmac
 from django.urls import reverse
@@ -329,9 +330,12 @@ def addToCart(request):
         items = data['items']
 
         all_cupons = K_Cupon.objects.all()
+        amount_in_cents = 0
+        if hasattr(order, 'get_cart_total') and order.get_cart_total:
+            amount_in_cents = int(float(order.get_cart_total) * 100)
 
         context = {'categories': categories, 'subcategories': subcategories, 'collections': collections, 'product': product, 'shipping': shipping1,
-                   'latest_col': latest_col, 'latest_collection':latest_collection, 'cartItems': cartItems, 'items': items, 'order': order, 'footer': footer1, 'all_cupons': all_cupons}
+                   'latest_col': latest_col, 'latest_collection':latest_collection, 'cartItems': cartItems, 'items': items, 'order': order, 'footer': footer1, 'amount_in_cents':amount_in_cents, 'all_cupons': all_cupons}
         return render(request, 'addToCart.html', context)
 
 def cart_modal(request):
@@ -506,6 +510,7 @@ def update_item(request):
         productId = data.get('productId')
         action = data.get('action')
         size = data.get('size')
+        color = data.get('color')
 
         product = D_Product.objects.get(id=productId)
 
@@ -526,7 +531,8 @@ def update_item(request):
             else:
                 order_item.save()
 
-        return JsonResponse({'message': 'Quantity updated'})
+        return JsonResponse({'message': 'Quantity updated','quantity': order_item.quantity if action != 'remove' or order_item.quantity > 0 else 0,
+    'cart_total': order.get_cart_total()})
 
 @csrf_exempt
 def process_cupon(request):
@@ -786,7 +792,7 @@ def process_order_online(request):
     SHOPID = "80729II90009901"
     currency = "978"
     lang = "EN"
-    shop_email = "info@zanafeel.com"
+    shop_email = "jemisha.florina@gmail.com"
     URLDONE = "https://zanafeel.com/payment_success/"
     URLBACK = "https://zanafeel.com/checkout/"
     URLMS = "https://zanafeel.com/notifications/"
@@ -887,3 +893,91 @@ def notifications(request):
 def elements(request):
     if request.method == 'GET':
         return render(request, 'elements.html')
+
+#
+# def paypal(request, order_id):
+#     order = get_object_or_404(H_Order, id=order_id)
+#     if not order or order.is_empty():
+#         return render(request, 'paypal.html',{'error_message': "Ju lutem shtoni produkte në karrocë për të vazhduar me pagesën."})
+#
+#     amount = order.get_total_amount()
+#     context = {
+#         'paypal_email': settings.PAYPAL_RECEIVER_EMAIL,
+#         'amount': amount,
+#         'order_id': order.id,
+#         'notify_url': request.build_absolute_uri(reverse('paypal_ipn')),
+#         'return_url': request.build_absolute_uri(reverse('payment_success')),
+#         'cancel_url': request.build_absolute_uri(reverse('payment_cancel')),
+#     }
+#     return render(request, 'paypal.html', context)
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import H_Order
+from .utils import cookieCart
+
+from django.conf import settings  # Nëse e ke në settings.py
+
+
+def paypal(request, order_id):
+    paypal_email = getattr(settings, 'PAYPAL_EMAIL', 'sb-la47ff43123895@business.example.com')
+
+    try:
+        # Nëse order_id është int (user i regjistruar)
+        order = H_Order.objects.get(id=int(order_id))
+        items = order.h_orderitem_set.all()
+        if not items.exists():
+            return render(request, 'empty_cart.html')
+
+        customer_email = order.customer.email
+        amount = float(order.get_cart_total)
+
+        context = {
+            'order_id': order_id,
+            'paypal_email': paypal_email,
+            'amount': amount,
+            'notify_url': 'https://example.com/paypal-ipn/',
+            'return_url': 'https://example.com/payment-success/',
+            'cancel_url': 'https://example.com/payment-cancelled/',
+            'customer_email': customer_email,
+        }
+
+        return render(request, 'paypal.html', context)
+
+    except (ValueError, H_Order.DoesNotExist):
+        # Guest user ose UUID nga cookie
+        guest_order_id = request.COOKIES.get('guest_order_id')
+        if guest_order_id == order_id:
+            cart_data = cookieCart(request)
+            items = cart_data.get('items', [])
+            if not items:
+                return render(request, 'empty_cart.html')
+
+            guest_email = request.COOKIES.get('guest_email', 'guest@example.com')
+            amount = cart_data['order']['get_cart_total']
+
+            context = {
+                'order_id': order_id,
+                'paypal_email': paypal_email,
+                'amount': amount,
+                'notify_url': 'https://example.com/paypal-ipn/',
+                'return_url': 'https://example.com/payment-success/',
+                'cancel_url': 'https://example.com/payment-cancelled/',
+                'customer_email': guest_email,
+            }
+            return render(request, 'paypal.html', context)
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid order ID'}, status=400)
+
+
+from django.http import HttpResponse
+
+def paypal_ipn(request):
+    # Këtu do vendosësh logjikën për të pranuar njoftimet IPN nga PayPal
+    # Për tani, thjesht testimi:
+    if request.method == 'POST':
+        # Përpunojmë të dhënat e IPN këtu (mund të shtosh validime)
+        print("IPN Data received:", request.POST)
+        return HttpResponse("IPN received", status=200)
+    else:
+        return HttpResponse("Invalid request", status=400)

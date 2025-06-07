@@ -5,13 +5,14 @@ for ( var i=0; i < updateBtns.length; i++) {
         var productId = this.dataset.product;
         var action = this.dataset.action;
         var size = this.dataset.size;
-        console.log('productId:', productId, 'action:', action, 'size', size);
+        var color = this.dataset.color;
+        console.log('productId:', productId, 'action:', action, 'size', size, 'color', color);
 
         console.log('USER:',user);
         if (user=== 'AnonymousUser'){
-            addCookieItem(productId, action, size);
+            addCookieItem(productId, action, size, color);
         }else{
-            updateUserOrder(productId, action, size)
+            updateUserOrder(productId, action, size, color)
         }
     })
 }
@@ -31,14 +32,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-function addCookieItem(productId, action, size) {
+function addCookieItem(productId, action, size, color) {
     console.log('Not logged in...');
 
     // Check the action type (add or remove)
     if(action == 'add') {
         // If product is not in the cart, add it with quantity 1
         if(cart[productId] == undefined) {
-            cart[productId] = { 'quantity': 1, 'size': size };
+            cart[productId] = { 'quantity': 1, 'size': size, 'color': color  };
             console.log('Added to cart:', cart[productId]);
         } else {
             // If the product is already in the cart, increase the quantity
@@ -48,7 +49,11 @@ function addCookieItem(productId, action, size) {
         }
 
         // Show the add message
-        document.getElementById('add-message').classList.remove('hidden');
+        const messageBox = document.getElementById('add-message');
+        if (messageBox) {
+            messageBox.classList.remove('hidden');
+        }
+
 
     } else if(action == 'remove') {
         // Check if the product exists in the cart
@@ -75,8 +80,7 @@ function addCookieItem(productId, action, size) {
         window.location.reload(true);
     }, 1500);
 }
-
-//function updateUserOrder(productId, action, size = null) { // Shto size si parametër opsional
+//function updateUserOrder(productId, action, size) {
 //    console.log('User is logged in, sending data.');
 //
 //    let url = '/update_item/';
@@ -89,7 +93,7 @@ function addCookieItem(productId, action, size) {
 //        body: JSON.stringify({
 //            'productId': productId,
 //            'action': action,
-//            'size': size  // Shto size këtu
+//            'size': size
 //        })
 //    })
 //    .then(response => response.json())
@@ -99,29 +103,23 @@ function addCookieItem(productId, action, size) {
 //    })
 //    .catch(error => console.error('Error:', error));
 //}
+function updateUserOrder(productId, action, size, color){
+    var url = '/update_item/'
 
-function updateUserOrder(productId, action, size) {
-    console.log('User is logged in, sending data.');
-
-    let url = '/update_item/';
     fetch(url, {
         method: 'POST',
-        headers: {
+        headers:{
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
+            'X-CSRFToken': csrftoken,
         },
-        body: JSON.stringify({
-            'productId': productId,
-            'action': action,
-            'size': size
-        })
+        body: JSON.stringify({'productId': productId, 'action': action, 'size': size})
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-        location.reload();
+    .then((response) => response.json())
+    .then((data) => {
+        console.log('Data:', data)
+        // Rifresko faqen që të shfaqet quantity dhe çmimi i ri
+        location.reload()
     })
-    .catch(error => console.error('Error:', error));
 }
 
 

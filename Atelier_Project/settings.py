@@ -41,7 +41,12 @@ INSTALLED_APPS = [
     'ckeditor',
     'Atelier_Shop',
     'Product',
+    'paypal.standard.ipn',
 ]
+
+# PayPal Settings (Sandbox për testim)
+PAYPAL_RECEIVER_EMAIL = 'sb-la47ff43123895@business.example.com'
+PAYPAL_TEST = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

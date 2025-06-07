@@ -37,7 +37,7 @@
 </div>
       </div>
       <div class="item-p">
-        <div class="item-price text-small">{{ item.product.price|floatformat:0 }} EUR</div>
+        <div class="item-price text-small">{{ item.get_total|floatformat:0 }} EUR</div>
         <div class="action-buttons">
           <button class="favorite text-small-h">Add to Favorites</button>
           <button class="remove-item update-cart text-small-h" data-product="{{ item.product.id }}" data-action="remove">Remove</button>
@@ -50,7 +50,7 @@
   <div class="cart-summary">
     <div class="total">
       <span class="text-small">TOTAL</span>
-      <span class="amount text-small">{{ order.get_cart_total|floatformat:0 }} EUR</span>
+      <span class="amount text-small">{{ order.get_cart_total|floatformat:2 }} EUR</span>
     </div>
     <p class="vat-notice text-sm">VAT Included</p>
   </div>

@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'head.html' %}
+    <title>PayPal &bullet; Atelier</title>
+</head>
+<body>
+<h2>Pagesë me PayPal</h2>
+<p>Emaili: {{ customer_email }}</p>
+<p>Totali: {{ amount|floatformat:0 }} EUR</p>
+
+<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+    <input type="hidden" name="business" value="{{ paypal_email }}">
+    <input type="hidden" name="cmd" value="_xclick">
+    <input type="hidden" name="item_name" value="Porosia #{{ order_id }}">
+    <input type="hidden" name="amount" value="{{ amount|floatformat:0 }}">
+    <input type="hidden" name="currency_code" value="EUR">
+    <input type="hidden" name="notify_url" value="{{ notify_url }}">
+    <input type="hidden" name="return" value="{{ return_url }}">
+    <input type="hidden" name="cancel_return" value="{{ cancel_url }}">
+    <input type="submit" value="Paguaj me PayPal">
+</form>
+
+</body>
+</html>

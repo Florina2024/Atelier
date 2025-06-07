@@ -57,18 +57,24 @@ nextBtn.addEventListener('click', (event) => {
   const closeBtn = document.querySelector('.close-modal');
   const openCartBtn = document.getElementById('openCartBtn');
 
+if (cartToggle) {
   cartToggle.addEventListener('click', function(e) {
     e.preventDefault();
     cartModal.classList.add('open');
   });
+}
 
+if (openCartBtn) {
   openCartBtn.addEventListener('click', () => {
-  cartModal.style.display = 'block';  // ose toggle class për animacion
-});
+    cartModal.style.display = 'block';
+  });
+}
 
+if (closeBtn) {cartData
   closeBtn.addEventListener('click', function() {
     cartModal.classList.remove('open');
   });
+}
 </script>
 <script>
 document.querySelectorAll('.quantity-selector').forEach(selector => {
@@ -153,4 +159,5 @@ countries.forEach(country => {
     select.appendChild(option);
 });
 </script>
+
 

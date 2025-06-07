@@ -2,6 +2,7 @@ from django.db import models
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
 from django.utils.text import slugify  # Importo slugify
+import uuid
 
 class A_Category(models.Model):
     category = models.CharField(max_length=100, default='')
@@ -110,9 +111,12 @@ class G_Customer(models.Model):
     name = models.CharField(max_length=50, default='', blank=True)
     surname = models.CharField(max_length=50, default='', blank=True)
     email = models.EmailField(max_length=100, null=True)
+    session_id = models.CharField(max_length=100, null=True, blank=True)
 
+    # def __str__(self):
+    #     return self.name + ' ' + self.surname
     def __str__(self):
-        return self.name + ' ' + self.surname
+        return self.user.username if self.user else f"Guest {self.session_id}"
 
 class H_Order(models.Model):
     customer = models.ForeignKey(G_Customer, on_delete=models.SET_NULL, null=True, blank=True)
@@ -120,6 +124,7 @@ class H_Order(models.Model):
     complete = models.BooleanField(default=False, null=True, blank=False)
     transaction_id = models.CharField(max_length=100, null=True)
     session_key = models.CharField(max_length=40, null=True, blank=True)
+    order_uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     @property
     def get_cart_total(self):

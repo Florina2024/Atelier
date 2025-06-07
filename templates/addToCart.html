@@ -29,7 +29,7 @@
 .quantity{font-size:12px; font-weight:300;letter-spacing:1px;}
 .total{display: flex; flex-direction:column; align-items:start;}
 .cart-right{padding-top:60px;}
-.box-item h5, .box-item h4{color: #d9d9d9; font-size:11px; font-weight:400;}
+.display-flex.sb h5, .display-flex.sb h4{color: #d9d9d9; font-size:11px; font-weight:400;}
 .box-item h2{font-size:22px; font-weight:300;}
 .box-item h3{font-size:14px; font-weight:300;}
 .checkout-actions{padding-top:30px;}
@@ -87,7 +87,7 @@
                                         </div>
                                         <div class="item-p">
                                 <div class="grid-p display-flex">
-                                    <h5 class="text-small mb-0"><span class="span-mobile"></span>{{ item.product.price|floatformat:0 }} EUR</h5>
+                                    <h5 class="text-small mb-0"><span class="span-mobile"></span>{{ item.get_total|floatformat:0 }} EUR</h5>
                                 </div>
                                 <div class="action-buttons">
                                   <button class="favorite text-small-h">Add to Favorites</button>
@@ -113,7 +113,7 @@
                                 {% endif %}
                                 <div class="box-item no-b display-flex sb">
                                     <h5 class="text-small mb-0">{{ order.get_cart_items }} Items</h5>
-                                    <h4 class="text-small mb-0">{{ order.get_cart_total|floatformat:2 }} EURO</h4>
+                                    <h4 class="text-small mb-0">{{ order.get_cart_total|floatformat:0 }} EUR</h4>
                                 </div>
                                 <div class="box-item display-flex sb">
                                     <h5 class="text-small mb-0">Shipping:</h5>
@@ -124,12 +124,15 @@
                                     <h3 class="text-small cap mb-0">TOTAL</h3>
                                     <h5 class="text-small">VAT Included</h5>
                                     </div>
-                                    <h2 class="text-small mb-0">{{ order.get_cart_total|floatformat:2 }} €</h2>
+                                    <h2 class="text-small mb-0">{{ order.get_cart_total|floatformat:0 }} EUR</h2>
                                 </div>
                             </div>
   <div class="checkout-actions">
     <a href="/checkout/" class="checkout-btn btn-thm">PROCEED TO CHECKOUT</a>
-    <button class="paypal-btn">PayPal</button>
+<!--    <button class="paypal-btn">PayPal</button>-->
+{% if order.id %}
+    <a href="{% url 'paypal' order.id %}">Pay with PayPal</a>
+{% endif %}
   </div>
 
   <div class="legal-notice">

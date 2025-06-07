@@ -7,7 +7,7 @@
     {% include 'head.html' %}
     <title>Checkout &bullet; Atelier</title>
 <style>
-    .grid-two{display: flex; align-items:center;justify-content:space-between; padding-top: 25px;gap:20px;}
+    .grid-two{display: flex; align-items:center;justify-content:space-between;gap:20px;padding-top:20px;}
     .one {padding-top: 25px;}
 .jacquemus-checkout {
         font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -27,13 +27,12 @@
     display: grid;
     grid-template-columns: 1.3fr 1fr;
     }
-    .order-summary{margin-left:20px;}
     .checkout-form, .order-summary {
        padding: 30px 20px;
     }
     .checkout-form{ border-right: 1px solid gray;}
     .form-section .logo {padding-bottom: 20px;font-family: var(--title);font-size: 24px;text-decoration: none;color: black;}
-    .form-section, .order-item, .order-total, .shipping-info, .help-section {
+    .form-section, .order-total, .shipping-info, .help-section {
         margin-bottom: 30px;
     }
     h2 {
@@ -43,6 +42,11 @@
         margin-bottom: 20px;
         font-weight: 500;
     }
+    .grid-two h2 {
+        font-weight: 300;
+        font-size: 16px;
+    }
+    .grid-two h4{letter-spacing: 1px;}
     h3 {
         font-size: 13px;
         font-weight: 500;
@@ -82,10 +86,14 @@
         font-size: 13px;
         cursor: pointer;
     }
-    .order-item {
-        display: flex;
-        justify-content: space-between;
-    }
+.order-item {
+    display: grid;
+    grid-template-columns: 0.3fr 1fr;
+    align-items: start;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+.item-price{align-self: flex-start;}
     .item-details h3 {
         font-weight: 400;
     }
@@ -109,12 +117,19 @@
         margin: 5px 0;
         line-height: 1.5;
     }
-    .item-image .img-fluid {
-    max-width: 100%;
-    height: 200px;
-    width:150px;
-    object-fit:cover;
-    object-position:center;
+.item-image {
+  width: 120px;          /* Gjerësia që do */
+  height: 160px;         /* Lartësia fikse */
+  overflow: hidden;      /* Prerje nëse duhet */
+  display: flex;         /* Për të qendruar imazhi në mes */
+  justify-content: start;
+  align-items: center;
+  }
+.item-image .img-fluid {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 .checkbox-group, .radio-group {
         margin-bottom: 15px;
@@ -140,6 +155,20 @@
         font-weight: normal;
     }
     .grid-two h4 a{color:var(--dark);}
+    .item-i{display: flex;justify-content:space-between;padding-right:10px;}
+    .items {max-height: 300px;overflow-y: auto;  scrollbar-width: thin;scrollbar-color: #ccc transparent; /* ngjyra e scroll-it për Firefox */
+}
+/* Për Chrome, Edge dhe Safari */
+.items::-webkit-scrollbar {
+  width: 2px;                    /* sa e hollë do jetë scrollbar-i */
+}
+.items::-webkit-scrollbar-track {
+  background: transparent;       /* sfondi i scroll-it */
+}
+.items::-webkit-scrollbar-thumb {
+  background-color: #aaa;        /* ngjyra e thumb-it (pjesa që lëviz) */
+  border-radius: 10px;           /* qoshe të rrumbullakosura */
+}
 </style>
 </head>
 <body>
@@ -241,13 +270,15 @@
         <div class="order-summary">
             <div class="grid-two">
             <h2>Order summary</h2>
-            <h4 class="text-sm"><a href="/addToCart/">Edit cart</a></h4>
+            <h4 class="text-small-h"><a href="/addToCart/">Edit cart</a></h4>
             </div>
+            <div class="items">
             {% for item in items %}
             <div class="order-item">
                 <div class="item-image">
                     <img src="{{ item.product.imageURL }}" class="img-fluid">
                 </div>
+                <div class="item-i">
                 <div class="item-details">
                     <h3>{{ item.product.name }}</h3>
                     <p>Size: {{ item.size }}</p>
@@ -255,10 +286,12 @@
                     <p>Qty: {{ item.quantity }}</p>
                 </div>
                 <div class="item-price">
-                    <p>{{ item.product.price|floatformat:0 }} EUR</p>
+                    <p>{{ item.get_total|floatformat:0 }} EUR</p>
+                </div>
                 </div>
             </div>
             {% endfor %}
+            </div>
             <div class="divider"></div>
 
             <div class="order-total">
@@ -596,7 +629,7 @@
                 .catch((error) => {
                     console.error('Error:', error);
                 });
-                document.getElementById('loading-message').classList.remove('hidden');
+<!--                document.getElementById('loading-message').classList.remove('hidden');-->
                 document.getElementById('make-payment').classList.add('hidden');
             } else {
                 document.getElementById('error-message').classList.remove('hidden');

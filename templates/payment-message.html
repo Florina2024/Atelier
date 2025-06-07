@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'head.html' %}
+    <title>Online Payment &bullet; Atelier</title>
+    <style>
+        .payment-box .message-head{
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding-bottom: 35px;
+        }
+        .payment-box .list-names{
+            background: #2e522e;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .payment-box.payment-declined .list-names{
+            background: #cc1212;
+        }
+        .payment-box .list-names .text-small{
+            font-size: 18px;
+            color: white;
+        }
+        .payment-box .list-names  i{
+            color: white;
+        }
+        .payment-box .no-line{
+            color: white;
+            font-size: 18px;
+        }
+        .payment-box .big-italic.no-i{
+            padding: 0 100px;
+            line-height: unset;
+            font-size: 29px;
+            margin: 20px;
+        }
+        .payment-box h4{
+            margin-bottom: 30px;
+        }
+        @media (max-width: 768px){
+            .payment-box .big-italic.no-i {padding: 0 10px;}
+        }
+        @media (max-width: 576px){
+            .payment-box .big-italic.no-i{font-size: 24px;}
+            .section-message h4.text-small{ padding: 0 50px; margin-bottom: 25px;}
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="low-nav">
+        {% include 'navbar.html' %}
+    </header>
+    <!-- End of Header -->
+    {% if request.get_full_path == '/payment_success/' %}
+        <!-- Success -->
+        <section class="section min-100 section-message payment-box">
+            <div class="container-one">
+                <div class="message-head">
+                    <div class="list-names">
+                        <span class="text-small cap"><i class="fa fa-check" aria-hidden="true"></i> Payment Successful</span>
+                    </div>
+                    <h3 class="big-italic no-i fs-45">The Payment has been successfully authorized!</h3>
+                    <h4 class="text-small cap mt-10">Make sure to check your email for more details!</h4>
+                    <a href="/" class="link-thm text-small cap">Go back home</a>
+                </div>
+            </div>
+        </section>
+        <!-- End of Success -->
+        {% elif request.get_full_path == '/payment_canceled/' %}
+        <!-- Success -->
+        <section class="section min-100 section-message payment-box payment-declined">
+            <div class="container-one">
+                <div class="message-head">
+                    <div class="list-names">
+                        <span class="text-small cap"><i class="fa fa-times" aria-hidden="true"></i> Payment Declined</span>
+                    </div>
+                    <h3 class="big-italic no-i fs-45">Your payment was declined!</h3>
+                    <h4 class="text-small cap mt-10">Please try again or use a different payment method.</h4>
+                    <a href="/checkout/" class="link-thm text-small cap">Back to Checkout</a>
+                </div>
+            </div>
+        </section>
+        <!-- End of Success -->
+    {% endif %}
+    <!-- Footer -->
+    <footer class="mt-0">
+        {% include 'footer.html' %}
+    </footer>
+    <!-- End of Footer -->
+
+    <!-- Scripts -->
+    {% include 'scripts.html' %}
+    <!-- End of Scripts -->
+
+
+
+</body>
+</html>

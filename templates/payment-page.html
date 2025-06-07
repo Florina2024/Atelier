@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'head.html' %}
+    <title>Online Payment &bullet; Atelier</title>
+</head>
+<body>
+    <header style="min-height: 90vh">
+        <br>
+        <center>
+            SIA VPOS
+            <form action="https://virtualpos.sia.eu/vpos/payments/main?PAGE=LAND" method="POST">
+            <input type="hidden" name="PAGE" value="LAND">
+            <input type="hidden" name="AMOUNT" value="{{ amount_in_cents }}">
+            <input type="hidden" name="CURRENCY" value="978">
+            <input type="hidden" name="LANG" value="EN">
+            <input type="hidden" name="SHOPID" value="80729II90009901">
+            <input type="hidden" name="ORDERID" value="{{ order_id }}">
+            <input type="hidden" name="URLDONE" value="https://zanafeel.com/payment_success/">
+            <input type="hidden" name="URLBACK" value="https://zanafeel.com/checkout/">
+            <input type="hidden" name="URLMS" value="https://zanafeel.com/notifications/">
+            <input type="hidden" name="ACCOUNTINGMODE" value="I">
+            <input type="hidden" name="AUTHORMODE" value="I">
+
+            <input type="hidden" name="EMAIL" value="{{ customer_email }}">
+            <input type="hidden" name="SHOPEMAIL" value="info@zanafeel.com">
+            <input type="hidden" name="MAC" value="{{ mac }}">
+            <input type=submit value="Go...">
+            </form>
+        </center>
+    </header>
+
+    <!-- Footer -->
+    <!--<footer class="mt-0">-->
+    <!--    {% include 'footer.html' %}-->
+    <!--</footer>-->
+    <!-- End of Footer -->
+
+    <!-- Scripts -->
+    <!--{% include 'scripts.html' %}-->
+    <!-- End of Scripts -->
+
+
+
+</body>
+</html>

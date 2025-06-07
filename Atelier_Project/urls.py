@@ -1,5 +1,5 @@
 from django.contrib import admin  # Importo admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from Atelier_Shop import views
@@ -31,6 +31,12 @@ urlpatterns = [
     path('notifications/', P_views.notifications, name='notifications'),
     path('elements/', P_views.elements, name='elements'),
     path('process_order_online/', P_views.process_order_online, name='process_order_online'),
+    path('paypal/', include('paypal.standard.ipn.urls')),
+    # path('paypal/<int:order_id>/<int:amount_in_cents>/', P_views.paypal, name='paypal')
+    path('paypal/<str:order_id>/', P_views.paypal, name='paypal'),
+    path('payment-success/', P_views.payment_success, name='payment_success'),
+    path('payment-cancelled/', P_views.payment_canceled, name='payment_canceled'),
+    path('paypal-ipn/', P_views.paypal_ipn, name='paypal_ipn'),  # për IPN
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
