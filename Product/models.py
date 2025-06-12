@@ -117,6 +117,34 @@ class G_Customer(models.Model):
     #     return self.name + ' ' + self.surname
     def __str__(self):
         return self.user.username if self.user else f"Guest {self.session_id}"
+#
+# class H_Order(models.Model):
+#     customer = models.ForeignKey(G_Customer, on_delete=models.SET_NULL, null=True, blank=True)
+#     date_ordered = models.DateTimeField(auto_now_add=True)
+#     complete = models.BooleanField(default=False, null=True, blank=False)
+#     transaction_id = models.CharField(max_length=100, null=True)
+#     session_key = models.CharField(max_length=40, null=True, blank=True)
+#     order_uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+#
+#     @property
+#     def get_cart_total(self):
+#         orderitems = self.i_orderitem_set.all()
+#         total = sum([item.get_total for item in orderitems])
+#         return total
+#
+#     @property
+#     def get_cart_items(self):
+#         orderitems = self.i_orderitem_set.all()
+#         total = sum([item.quantity for item in orderitems])
+#         return total
+#
+#     @property
+#     def get_order_id(self):
+#         order_id = self.id
+#         return order_id
+#
+#     def __str__(self):
+#         return 'Order ID: ' + str(self.id) + ', Customer: ' + self.customer.name + ' ' + self.customer.surname
 
 class H_Order(models.Model):
     customer = models.ForeignKey(G_Customer, on_delete=models.SET_NULL, null=True, blank=True)
@@ -144,7 +172,10 @@ class H_Order(models.Model):
         return order_id
 
     def __str__(self):
-        return 'Order ID: ' + str(self.id) + ', Customer: ' + self.customer.name + ' ' + self.customer.surname
+        if self.customer:
+            return f'Order ID: {self.id}, Customer: {self.customer.name} {self.customer.surname}'
+        else:
+            return f'Order ID: {self.id}, Customer: Unknown'
 
 class I_OrderItem(models.Model):
     product = models.ForeignKey(D_Product, on_delete=models.SET_NULL, null=True)
@@ -154,14 +185,23 @@ class I_OrderItem(models.Model):
     size = models.CharField(max_length=30, null=True)
     color = models.CharField(max_length=50, null=True)
 
+    # @property
+    # def get_total(self):
+    #     total = self.product.price * self.quantity
+    #     return total
     @property
     def get_total(self):
-        total = self.product.price * self.quantity
-        return total
+        if self.product and self.quantity:
+            return self.product.price * self.quantity
+        return 0
 
-
+    # def __str__(self):
+    #     return 'Order ID: ' + str(self.order.id) + ', ' + 'Product: ' + self.product.name + ', Quantity: ' + str(self.quantity)
     def __str__(self):
-        return 'Order ID: ' + str(self.order.id) + ', ' + 'Product: ' + self.product.name + ', Quantity: ' + str(self.quantity)
+        order_id = self.order.id if self.order else 'N/A'
+        product_name = self.product.name if self.product else 'Product deleted'
+        quantity = self.quantity if self.quantity else 0
+        return f'Order ID: {order_id}, Product: {product_name}, Quantity: {quantity}'
 
 class J_ShippingAddres(models.Model):
     customer = models.ForeignKey(G_Customer, on_delete=models.SET_NULL, null=True, blank=True)

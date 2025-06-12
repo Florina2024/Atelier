@@ -6,9 +6,9 @@
     <title>PayPal &bullet; Atelier</title>
 </head>
 <body>
-<h2>Pagesë me PayPal</h2>
-<p>Emaili: {{ customer_email }}</p>
-<p>Totali: {{ amount|floatformat:0 }} EUR</p>
+<!--<h2>Pagesë me PayPal</h2>-->
+<!--&lt;!&ndash;<p>Emaili: {{ customer_email }}</p>&ndash;&gt;-->
+<!--<p>Totali: {{ amount|floatformat:0 }} EUR</p>-->
 
 <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
     <input type="hidden" name="business" value="{{ paypal_email }}">

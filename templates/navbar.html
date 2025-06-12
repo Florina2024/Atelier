@@ -1,88 +1,99 @@
 {% load static %}
 <div class="main-navbar">
   <div class="navbar-left">
-    <a href="/" class="logo">JACQUEMUS</a>
+    <a href="/"><img src="{% static 'images/logo-nav.png' %}" alt="Logo img" class="logo"></a>
      <ul>
-      <li><a href="#" class="text-sm">"Tropique" - The Resort Collection</a></li>
-      <li><a href="#" class="text-sm">Bags</a></li>
-      <li><a href="#" class="text-sm">Women</a></li>
-      <li><a href="#" class="text-sm">Men</a></li>
+      <li><a href="#" class="text-sm">Collection</a></li>
+      <li><a href="#" class="text-sm">Shop</a></li>
       <li><a href="#" class="text-sm">Explore</a></li>
     </ul>
   </div>
   <div class="navbar-right">
-  <a href="#"><img src="{% static 'images/search.png' %}" alt="Search Icon" class="icon-img"></a>
+<!--  <a href="#"><img src="{% static 'images/search.png' %}" alt="Search Icon" class="icon-img"></a>-->
+  <div class="search-toggle-container">
+  <button class="search-icon" id="searchToggle">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+  </button>
+</div>
+
+<div class="fullpage-search-container" id="searchContainer">
+  <div class="fullpage-search-bar">
+      <div class="search-input-container">
+      <input class="text-sm" type="text" placeholder="Search here..." id="searchInput">
+      <button class="close-search" id="closeSearch">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="suggestions">
+  <div class="suggestions-grid">
+    <div class="categories-column">
+      {% for category in categories %}
+      <div class="category-group">
+        <div class="subcategories">
+          {% for subcategory in category.b_subcategory_set.all %}
+          <a href="#" class="text-small">{{ subcategory.subcategory }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="products-column">
+      <div class="popular-products">
+        {% for product in popular_products %}
+        <div class="product-card">
+          <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
 
 <!--    <a href="#"><i class="icon-user"></i></a>-->
 <!--    <a href="#"><i class="icon-heart"></i></a>-->
+    <!-- Navbar Heart Icon -->
+<a href="#" id="wishlist-icon" data-bs-toggle="modal" data-bs-target="#wishlistModal" class="position-relative">
+  {% with wishlist=request.session.wishlist %}
+    {% if wishlist %}
+      <i class="fas fa-heart"></i>
+    {% else %}
+      <i class="far fa-heart"></i>
+    {% endif %}
+<!--    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="wishlist-count">-->
+<!--      {{ wishlist|length }}-->
+<!--    </span>-->
+  {% endwith %}
+</a>
 <!--    <a href="#" class="text-sm">Shopping cart</a>-->
     <a href="#" id="openCartBtn" class="text-sm cart-toggle"><span>Shopping cart <i class="bi bi-handbag"></i> <span id="cart-total">{{ cartItems }}</span></span><span class="underline"></span></a>
   </div>
 </div>
 
-
-<!--<div class="shopping-cart-modal" id="cartModal">-->
-<!--  <div class="modal-header">-->
-<!--    <h2>Shopping cart</h2>-->
-<!--    <button class="close-modal">&times;</button>-->
-<!--  </div>-->
-
-<!--  <div class="cart-items">-->
-<!--    <div class="cart-item">-->
-<!--      {% for item in items %}-->
-<!--        <div class="img-box">-->
-<!--            <img src="{{ item.product.imageURL }}" class="img-fluid">-->
-<!--        </div>-->
-<!--      <div class="item-info">-->
-<!--        <h3>{{ item.product.name }}</h3>-->
-<!--        <p class="variant">Size: {{ item.size }}</p>-->
-<!--      </div>-->
-
-<!--      <div class="item-price">{{ item.product.price|floatformat:0 }} EUR</div>-->
-
-<!--      <div class="item-actions">-->
-<!--        <div class="quantity-selector">-->
-<!--          <button class="decrement">-</button>-->
-<!--          <span class="quantity">1</span>-->
-<!--          <button class="increment">+</button>-->
-<!--        </div>-->
-
-<!--        <div class="action-buttons">-->
-<!--          <button class="edit">Edit</button>-->
-<!--          <button class="favorite">Add to Favorites</button>-->
-<!--          <button class="remove">Remove</button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--     {% endfor %}-->
-<!--    </div>-->
-<!--  </div>-->
-
-<!--  <div class="cart-summary">-->
-<!--    <div class="total">-->
-<!--      <span>TOTAL</span>-->
-<!--      <span class="amount">{{ item.product.price|floatformat:0 }} EUR</span>-->
-<!--    </div>-->
-<!--    <p class="vat-notice">VAT Included</p>-->
-<!--  </div>-->
-
-<!--  <div class="checkout-actions">-->
-<!--    <button class="checkout-btn">PROCEED TO CHECKOUT</button>-->
-<!--    <button class="paypal-btn">PayPal</button>-->
-<!--  </div>-->
-
-<!--  <div class="legal-notice">-->
-<!--    <p>By making this payment, you accept the General Conditions of Sale and confirm that you have read and understand the Privacy Policy.</p>-->
-<!--  </div>-->
-
-<!--  <div class="footer-links-cart">-->
-<!--    <a href="/addToCart/" class="view-cart">VIEW MY SHOPPING CART</a>-->
-<!--    <div class="help-section">-->
-<!--      <p>Need help? Contact us</p>-->
-<!--      <p>Monday to Friday from 09:00AM to 8 PM ET.</p>-->
-<!--      <div class="contact-methods">-->
-<!--        <a href="#" class="call">Call</a>-->
-<!--        <a href="#" class="email">Email</a>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
+<!-- Wishlist Modal -->
+<div class="modal fade" id="wishlistModal" tabindex="-1" aria-labelledby="wishlistModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="wishlistModalLabel">Wishlist</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="wishlist-items">
+        <!-- Këtu do ngarkohet lista e produkteve me AJAX -->
+        <p>Loading wishlist...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <!-- Mund të shtosh button "Checkout" ose "Clear wishlist" nëse do -->
+      </div>
+    </div>
+  </div>
+</div>

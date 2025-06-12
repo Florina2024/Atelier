@@ -506,33 +506,93 @@ from django.http import JsonResponse
 @csrf_exempt
 def update_item(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        productId = data.get('productId')
-        action = data.get('action')
-        size = data.get('size')
-        color = data.get('color')
+        try:
+            data = json.loads(request.body)
+            productId = data.get('productId')
+            action = data.get('action')
+            size = data.get('size')
+            color = data.get('color')
 
-        product = D_Product.objects.get(id=productId)
+            product = D_Product.objects.get(id=productId)
 
-        session_key = request.session.session_key
-        if not session_key:
-            request.session.create()
-        order, created = H_Order.objects.get_or_create(session_key=session_key, complete=False)
-
-        order_item, created = I_OrderItem.objects.get_or_create(order=order, product=product, size=size)
-
-        if action == 'add':
-            order_item.quantity += 1
-            order_item.save()
-        elif action == 'remove':
-            order_item.quantity -= 1
-            if order_item.quantity <= 0:
-                order_item.delete()
+            if request.user.is_authenticated:
+                customer = G_Customer.objects.get(user=request.user)
+                order, created = H_Order.objects.get_or_create(customer=customer, complete=False)
             else:
-                order_item.save()
+                session_key = request.session.session_key
+                if not session_key:
+                    request.session.create()
+                    session_key = request.session.session_key
 
-        return JsonResponse({'message': 'Quantity updated','quantity': order_item.quantity if action != 'remove' or order_item.quantity > 0 else 0,
-    'cart_total': order.get_cart_total()})
+                order, created = H_Order.objects.get_or_create(session_key=session_key, complete=False)
+
+            order_item, created = I_OrderItem.objects.get_or_create(order=order, product=product, size=size, color=color)
+
+            if action == 'add':
+                order_item.quantity += 1
+                order_item.save()
+                print(f"Added one: New quantity = {order_item.quantity}")
+            elif action == 'remove':
+                order_item.quantity -= 1
+                if order_item.quantity <= 0:
+                    order_item.delete()
+                    print("Order item deleted because quantity <= 0")
+                else:
+                    order_item.save()
+                    print(f"Removed one: New quantity = {order_item.quantity}")
+
+            return JsonResponse({
+                'message': 'Quantity updated',
+                'quantity': order_item.quantity if not (action == 'remove' and order_item.quantity <= 0) else 0,
+                'cart_total': order.get_cart_total()
+            })
+        except Exception as e:
+            print("Error in update_item:", e)
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt
+def update_wishlist(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        product_id = data.get('productId')
+        action = data.get('action')
+
+        wishlist = request.session.get('wishlist', [])
+
+        if action == 'add' and product_id not in wishlist:
+            wishlist.append(product_id)
+        elif action == 'remove' and product_id in wishlist:
+            wishlist.remove(product_id)
+
+        request.session['wishlist'] = wishlist
+        request.session.modified = True
+
+        return JsonResponse({
+            'product_count': len(wishlist),
+            'message': 'Wishlist updated'
+        })
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+def get_wishlist_items(request):
+    wishlist = request.session.get('wishlist', [])
+    products = []
+
+    for pid in wishlist:
+        product = get_object_or_404(D_Product, pk=pid)
+        products.append({
+            'id': product.id,
+            'title': product.title,
+            'price': product.price,
+            'image_url': product.image.url if product.image else '',
+            # Shto fushat që dëshiron të shfaqësh
+        })
+
+    return JsonResponse({'products': products})
 
 @csrf_exempt
 def process_cupon(request):
@@ -893,23 +953,6 @@ def notifications(request):
 def elements(request):
     if request.method == 'GET':
         return render(request, 'elements.html')
-
-#
-# def paypal(request, order_id):
-#     order = get_object_or_404(H_Order, id=order_id)
-#     if not order or order.is_empty():
-#         return render(request, 'paypal.html',{'error_message': "Ju lutem shtoni produkte në karrocë për të vazhduar me pagesën."})
-#
-#     amount = order.get_total_amount()
-#     context = {
-#         'paypal_email': settings.PAYPAL_RECEIVER_EMAIL,
-#         'amount': amount,
-#         'order_id': order.id,
-#         'notify_url': request.build_absolute_uri(reverse('paypal_ipn')),
-#         'return_url': request.build_absolute_uri(reverse('payment_success')),
-#         'cancel_url': request.build_absolute_uri(reverse('payment_cancel')),
-#     }
-#     return render(request, 'paypal.html', context)
 
 from django.shortcuts import render
 from django.http import JsonResponse

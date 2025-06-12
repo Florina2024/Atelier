@@ -69,8 +69,7 @@ if (openCartBtn) {
     cartModal.style.display = 'block';
   });
 }
-
-if (closeBtn) {cartData
+if (closeBtn) {
   closeBtn.addEventListener('click', function() {
     cartModal.classList.remove('open');
   });
@@ -102,62 +101,53 @@ document.querySelectorAll('.quantity-selector').forEach(selector => {
   });
 });
 </script>
-
 <script>
-// List of major country codes (alphabetical order)
-const countries = [
-    {name: "Albania", code: "+355"},
-    {name: "Australia", code: "+61"},
-    {name: "Austria", code: "+43"},
-    {name: "Belgium", code: "+32"},
-    {name: "Brazil", code: "+55"},
-    {name: "Canada", code: "+1"},
-    {name: "China", code: "+86"},
-    {name: "Croatia", code: "+385"},
-    {name: "Denmark", code: "+45"},
-    {name: "Egypt", code: "+20"},
-    {name: "France", code: "+33"},
-    {name: "Germany", code: "+49"},
-    {name: "Greece", code: "+30"},
-    {name: "India", code: "+91"},
-    {name: "Italy", code: "+39"},
-    {name: "Japan", code: "+81"},
-    {name: "Kosovo", code: "+383"},
-    {name: "Montenegro", code: "+382"},
-    {name: "Netherlands", code: "+31"},
-    {name: "North Macedonia", code: "+389"},
-    {name: "Norway", code: "+47"},
-    {name: "Portugal", code: "+351"},
-    {name: "Qatar", code: "+974"},
-    {name: "Russia", code: "+7"},
-    {name: "Saudi Arabia", code: "+966"},
-    {name: "Serbia", code: "+381"},
-    {name: "Spain", code: "+34"},
-    {name: "Sweden", code: "+46"},
-    {name: "Switzerland", code: "+41"},
-    {name: "Turkey", code: "+90"},
-    {name: "United Arab Emirates", code: "+971"},
-    {name: "United Kingdom", code: "+44"},
-    {name: "United States", code: "+1"}
-];
+document.addEventListener('DOMContentLoaded', function() {
+  const searchToggle = document.getElementById('searchToggle');
+  const searchContainer = document.getElementById('searchContainer');
 
-// Sort alphabetically
-countries.sort((a, b) => a.name.localeCompare(b.name));
+  // Toggle search bar
+  searchToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    searchContainer.classList.toggle('active');
 
-// Populate select element
-const select = document.querySelector('.country-code');
-countries.forEach(country => {
-    const option = document.createElement('option');
-    option.value = country.code;
-    option.textContent = `${country.name} ${country.code}`;
-
-    // Set Albania as default selected
-    if (country.code === "+355") {
-        option.selected = true;
+    if (searchContainer.classList.contains('active')) {
+      document.getElementById('searchInput').focus();
     }
+  });
 
-    select.appendChild(option);
+  // Close when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!searchContainer.contains(e.target) && e.target !== searchToggle) {
+      searchContainer.classList.remove('active');
+    }
+  });
+const closeSearch = document.getElementById('closeSearch');
+if (closeSearch) {
+  closeSearch.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('searchContainer').classList.remove('active');
+  });
+}
+  // Prevent closing when clicking inside search container
+  searchContainer.addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
+
+  // Search functionality
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const items = document.querySelectorAll('.suggestions li');
+
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+    });
+  });
 });
+
 </script>
+
 
 

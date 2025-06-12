@@ -112,7 +112,7 @@ function updateUserOrder(productId, action, size, color){
             'Content-Type': 'application/json',
             'X-CSRFToken': csrftoken,
         },
-        body: JSON.stringify({'productId': productId, 'action': action, 'size': size})
+        body: JSON.stringify({'productId': productId, 'action': action, 'size': size, 'color': color})
     })
     .then((response) => response.json())
     .then((data) => {
@@ -121,6 +121,40 @@ function updateUserOrder(productId, action, size, color){
         location.reload()
     })
 }
+
+function updateWishlist(productId, action) {
+    fetch('/update_wishlist/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ productId: productId, action: action })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Përditëso numrin në navbar
+        const icon = document.querySelector('#wishlist-icon i');
+        const countSpan = document.querySelector('#wishlist-count');
+
+        if(data.product_count > 0) {
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+        } else {
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+        }
+        countSpan.textContent = data.product_count;
+
+        // Rifresko modal-in nëse është hapur
+        const modal = document.getElementById('wishlistModal');
+        if (modal.classList.contains('show')) {
+            document.getElementById('wishlist-icon').click(); // Mbyll modalin
+            setTimeout(() => document.getElementById('wishlist-icon').click(), 100); // Rihap modalin për të rifreskuar listën
+        }
+    });
+}
+
 
 
 

@@ -32,6 +32,8 @@ def index(request):
         products_in_collection = D_Product.objects.filter(collection=collection)
         gallery_images_for_collection = GalleryImage.objects.filter(product__in=products_in_collection)
         new_products = D_Product.objects.filter(is_new=True).order_by('-id')[:4]
+        popular_products = D_Product.objects.filter(is_new=True).order_by('-id')[:4]
+        wishlist = request.session.get('wishlist', [])
 
         # Handle the cart data
         data = cartData(request)
@@ -70,7 +72,9 @@ def index(request):
             'cartItems': cartItems,
             'products1': products_group1,
             'products2': products_group2,
+            'popular_products':popular_products,
             'items':items,
+            'wishlist': wishlist,
             'g_customer': g_customer  # Pass the G_Customer (or guest) info to the template
         }
 

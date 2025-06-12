@@ -7,6 +7,7 @@
     {% include 'head.html' %}
     <title>Checkout &bullet; Atelier</title>
 <style>
+    section{padding: 60px 0!important;}
     .grid-two{display: flex; align-items:center;justify-content:space-between;gap:20px;padding-top:20px;}
     .one {padding-top: 25px;}
 .jacquemus-checkout {
@@ -22,7 +23,6 @@
         text-align: center;
         margin-bottom: 40px;
     }
-  #checkout{padding: 0 10px;}
    .checkout-container {
     display: grid;
     grid-template-columns: 1.3fr 1fr;
@@ -172,6 +172,11 @@
 </style>
 </head>
 <body>
+        <!-- Header -->
+    <header class="low-nav">
+        {% include 'navbar.html' %}
+    </header>
+    <!-- End of Header -->
     <!-- Checkout -->
     <section class="section section-top-low" id="checkout">
     <div class="checkout-container container-one">
@@ -179,7 +184,7 @@
         <div class="checkout-form">
             <!-- Contact Information -->
             <div class="form-section">
-                <a href="/" class="logo">JACQUEMUS</a>
+                <h2 class="text-small cap">Fill the required data!</h2>
               <form id="form" method="POST">
                  {% csrf_token %}
                 <div class="grid-two">
@@ -636,6 +641,59 @@
             }
         }
     </script>
-
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+// List of major country codes (alphabetical order)
+const countries = [
+    {name: "Albania", code: "+355"},
+    {name: "Australia", code: "+61"},
+    {name: "Austria", code: "+43"},
+    {name: "Belgium", code: "+32"},
+    {name: "Brazil", code: "+55"},
+    {name: "Canada", code: "+1"},
+    {name: "China", code: "+86"},
+    {name: "Croatia", code: "+385"},
+    {name: "Denmark", code: "+45"},
+    {name: "Egypt", code: "+20"},
+    {name: "France", code: "+33"},
+    {name: "Germany", code: "+49"},
+    {name: "Greece", code: "+30"},
+    {name: "India", code: "+91"},
+    {name: "Italy", code: "+39"},
+    {name: "Japan", code: "+81"},
+    {name: "Kosovo", code: "+383"},
+    {name: "Montenegro", code: "+382"},
+    {name: "Netherlands", code: "+31"},
+    {name: "North Macedonia", code: "+389"},
+    {name: "Norway", code: "+47"},
+    {name: "Portugal", code: "+351"},
+    {name: "Qatar", code: "+974"},
+    {name: "Russia", code: "+7"},
+    {name: "Saudi Arabia", code: "+966"},
+    {name: "Serbia", code: "+381"},
+    {name: "Spain", code: "+34"},
+    {name: "Sweden", code: "+46"},
+    {name: "Switzerland", code: "+41"},
+    {name: "Turkey", code: "+90"},
+    {name: "United Arab Emirates", code: "+971"},
+    {name: "United Kingdom", code: "+44"},
+    {name: "United States", code: "+1"}
+];
+    const select = document.querySelector('.country-code');
+    if (select) {
+        countries.sort((a, b) => a.name.localeCompare(b.name));
+        countries.forEach(country => {
+            const option = document.createElement('option');
+            option.value = country.code;
+            option.textContent = `${country.name} ${country.code}`;
+            if (country.code === "+355") option.selected = true;
+            select.appendChild(option);
+        });
+    } else {
+        // Munde edhe ta heqësh këtë console.warn nëse të shqetëson
+        console.warn("Element '.country-code' nuk u gjet në këtë faqe.");
+    }
+});
+</script>
 </body>
 </html>

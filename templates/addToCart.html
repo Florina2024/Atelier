@@ -131,7 +131,7 @@
     <a href="/checkout/" class="checkout-btn btn-thm">PROCEED TO CHECKOUT</a>
 <!--    <button class="paypal-btn">PayPal</button>-->
 {% if order.id %}
-    <a href="{% url 'paypal' order.id %}">Pay with PayPal</a>
+    <a href="{% url 'paypal' order.id %}" class="paypal-btn">PayPal</a>
 {% endif %}
   </div>
 
